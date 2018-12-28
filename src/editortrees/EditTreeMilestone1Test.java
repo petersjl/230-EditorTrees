@@ -24,32 +24,38 @@ public class EditTreeMilestone1Test {
 	private static final int MAX_SCORE = 55;
 	private static double m1weight = (double) MAX_SCORE / MAX_RAW_POINTS;
 
-	// Tests named with "Simple" are there to give some immediate feedback.
+
+	// *********************************************************
+	// Tests named with "testSimple..." are there to give some immediate feedback.
 	// They don't require any balancing so don't use balance code, rotations, or
 	// rank.
-	// More intense tests that require rotations and balancing are below. No
-	// problem starting by using size() rather than rank (correctness first).
-	// While premature
-	// optimization isn't good, you are required to make this efficient too (and
+	//
+	// More intense tests that require rotations and balancing are below.
+	// Many of these tests are named "testRot..."
+	//
+	// No problem starting by using size() rather than rank (correctness first).
+	// While premature optimization isn't good, you are required to make this
+	// efficient too (and
 	// efficiency is worth a TON of points on later milestones), although that
-	// will eventually kill your efficiency, so it's only a warmup.
-
+	// will eventually kill your efficiency, so it's only a warm-up.
+	// *********************************************************
+	
 	@Test
-	public void testEmptySimple() {
+	public void testSimpleEmpty() {
 		EditTree t = new EditTree();
 		assertEquals("", t.toString());
 		m1points += m1weight;
 	}
 
 	@Test
-	public void testOneCharacterConstructorSimple() {
+	public void testSimpleOneCharacterConstructor() {
 		EditTree t = new EditTree('x');
 		assertEquals("x", t.toString());
 		m1points += m1weight;
 	}
 
 	@Test
-	public void testAppendToBeNewRootSimple() {
+	public void testSimpleAddAtEndV1ToBeNewRoot() {
 		EditTree t = new EditTree();
 		t.add('c');
 		assertEquals("c", t.toString());
@@ -57,7 +63,7 @@ public class EditTreeMilestone1Test {
 	}
 
 	@Test
-	public void testAppendNoRotationsSimple() {
+	public void testSimpleAddAtEndV2NoRotations() {
 		EditTree t = new EditTree();
 		t.add('c');
 		t.add('d');
@@ -66,7 +72,7 @@ public class EditTreeMilestone1Test {
 	}
 
 	@Test
-	public void testAppendManyNoRotationsSimple() {
+	public void testSimpleAddAtEndV3ManyNoRotations() {
 		EditTree t = new EditTree();
 		t.add('a');
 		t.add('b');
@@ -83,7 +89,7 @@ public class EditTreeMilestone1Test {
 	}
 
 	@Test
-	public void testAddNoRotationsSimple() {
+	public void testSimpleAddAtPositionV1NoRotations() {
 		EditTree t = new EditTree();
 		t.add('b', 0);
 		t.add('a', 0);
@@ -93,7 +99,7 @@ public class EditTreeMilestone1Test {
 	}
 
 	@Test
-	public void testAddNoRotationsSimple2() {
+	public void testSimpleAddAtPositionV2NoRotations() {
 		EditTree t = new EditTree();
 		t.add('d', 0);
 		t.add('b', 0);
@@ -106,7 +112,18 @@ public class EditTreeMilestone1Test {
 		m1points += m1weight;
 	}
 
+	// *********************************************************
 	// More intense tests that require rotations and balancing.
+	// *********************************************************
+
+	// *********************************************************
+	// These first few tests assert zero rotations
+	//
+	// If you temporarily implement the 'totalRotationCount' method
+	// to return zero, then these tests that assert zero rotations
+	// will not fail due to a problem with rotations.
+	// This will allow you to test 'toString' and 'toDebugString'
+	// *********************************************************
 	@Test
 	public void testEmpty() {
 		EditTree t = new EditTree();
@@ -185,7 +202,7 @@ public class EditTreeMilestone1Test {
 		assertEquals(3, t.height());
 		m1points += m1weight;
 	}
-
+	
 	@Test
 	public void testInsertingIntoLastElement() {
 		EditTree t = new EditTree();
@@ -212,8 +229,11 @@ public class EditTreeMilestone1Test {
 		m1points += m1weight;
 	}
 
+	// *********************************************************
+	// Many of the following tests assert > zero rotations
+	// *********************************************************
 	@Test
-	public void testSingleLeftRotationFirstLevel() {
+	public void testRotSingleLeftRotationFirstLevel() {
 		EditTree t = new EditTree();
 		t.add('a');
 		t.add('b');
@@ -227,7 +247,7 @@ public class EditTreeMilestone1Test {
 	}
 
 	@Test
-	public void testSingleLeftRotationSecondLevel() {
+	public void testRotSingleLeftRotationSecondLevel() {
 		// Cause a rotation on the right subtree
 		EditTree t1 = new EditTree();
 		t1.add('b');
@@ -260,7 +280,7 @@ public class EditTreeMilestone1Test {
 	}
 
 	@Test
-	public void testSingleLeftRotationThirdLevel() {
+	public void testRotSingleLeftRotationThirdLevel() {
 		// Cause a rotation on the farthest rightmost from the third level
 		EditTree t1 = new EditTree();
 		t1.add('d');
@@ -341,7 +361,7 @@ public class EditTreeMilestone1Test {
 	}
 
 	@Test
-	public void testSingleLeftRotationTwoLevelFromRoot() {
+	public void testRotSingleLeftRotationTwoLevelFromRoot() {
 		EditTree t = new EditTree();
 		t.add('b');
 		t.add('a', 0);
@@ -359,7 +379,7 @@ public class EditTreeMilestone1Test {
 	}
 
 	@Test
-	public void testSingleLeftRotationTwoLevelFromFirstLevel() {
+	public void testRotSingleLeftRotationTwoLevelFromFirstLevel() {
 		// Cause a rotation on the right subtree
 		EditTree t1 = new EditTree();
 
@@ -406,7 +426,7 @@ public class EditTreeMilestone1Test {
 	}
 
 	@Test
-	public void testSingleRightRotationFirstLevel() {
+	public void testRotSingleRightRotationFirstLevel() {
 		EditTree t = new EditTree();
 		t.add('c');
 		t.add('b', 0);
@@ -422,7 +442,7 @@ public class EditTreeMilestone1Test {
 	}
 
 	@Test
-	public void testSingleRightRotationSecondLevel() {
+	public void testRotSingleRightRotationSecondLevel() {
 		// Cause a rotation on the left subtree
 		EditTree t1 = new EditTree();
 		t1.add('d');
@@ -456,7 +476,7 @@ public class EditTreeMilestone1Test {
 	}
 
 	@Test
-	public void testSingleRightRotationThirdLevel() {
+	public void testRotSingleRightRotationThirdLevel() {
 		// Cause a rotation on the leftmost branch of the left subtree
 		EditTree t1 = new EditTree();
 
@@ -535,7 +555,7 @@ public class EditTreeMilestone1Test {
 	}
 
 	@Test
-	public void testSingleRightRotationTwoLevelFromRoot() {
+	public void testRotSingleRightRotationTwoLevelFromRoot() {
 		EditTree t = new EditTree();
 
 		t.add('e');
@@ -554,7 +574,7 @@ public class EditTreeMilestone1Test {
 	}
 
 	@Test
-	public void testSingleRightRotationTwoLevelFromFirstLevel() {
+	public void testRotSingleRightRotationTwoLevelFromFirstLevel() {
 		// Cause a rotation on the left subtree
 		EditTree t1 = new EditTree();
 
@@ -599,7 +619,7 @@ public class EditTreeMilestone1Test {
 	}
 
 	@Test
-	public void testDoubleLeftRotationFirstLevel() {
+	public void testRotDoubleLeftRotationFirstLevel() {
 		EditTree t = new EditTree();
 
 		t.add('a');
@@ -614,7 +634,7 @@ public class EditTreeMilestone1Test {
 	}
 
 	@Test
-	public void testDoubleLeftRotationSecondLevel() {
+	public void testRotDoubleLeftRotationSecondLevel() {
 		// Cause a rotation in the right subtree
 		EditTree t1 = new EditTree();
 
@@ -651,7 +671,7 @@ public class EditTreeMilestone1Test {
 	// MB: continue verifying
 
 	@Test
-	public void testDoubleLeftRotationThirdLevel() {
+	public void testRotDoubleLeftRotationThirdLevel() {
 		// Cause a rotation on the rightmost branch
 		EditTree t1 = new EditTree();
 
@@ -730,7 +750,7 @@ public class EditTreeMilestone1Test {
 	}
 
 	@Test
-	public void testDoubleLeftRotationTwoLevelFromFirstLevel() {
+	public void testRotDoubleLeftRotationTwoLevelFromFirstLevel() {
 		// Cause a rotation on the right subtree
 		EditTree t1 = new EditTree();
 
@@ -775,7 +795,7 @@ public class EditTreeMilestone1Test {
 	}
 
 	@Test
-	public void testDoubleRightRotationFirstLevel() {
+	public void testRotDoubleRightRotationFirstLevel() {
 		EditTree t = new EditTree();
 		t.add('c');
 		t.add('a', 0);
@@ -789,7 +809,7 @@ public class EditTreeMilestone1Test {
 	}
 
 	@Test
-	public void testDoubleRightRotationSecondLevel() {
+	public void testRotDoubleRightRotationSecondLevel() {
 		// Cause a rotation from the right subtree
 		EditTree t1 = new EditTree();
 
@@ -824,7 +844,7 @@ public class EditTreeMilestone1Test {
 	}
 
 	@Test
-	public void testDoubleRightRotationThirdLevel() {
+	public void testRotDoubleRightRotationThirdLevel() {
 		// Cause a rotation on the leftmost branch
 		EditTree t1 = new EditTree();
 
@@ -903,7 +923,7 @@ public class EditTreeMilestone1Test {
 	}
 
 	@Test
-	public void testDoubleRightRotationTwoLevelFromRoot() {
+	public void testRotDoubleRightRotationTwoLevelFromRoot() {
 		EditTree t = new EditTree();
 
 		t.add('e');
@@ -922,7 +942,7 @@ public class EditTreeMilestone1Test {
 	}
 
 	@Test
-	public void testDoubleRightRotationTwoLevelFromFirstLevel() {
+	public void testRotDoubleRightRotationTwoLevelFromFirstLevel() {
 		EditTree t1 = new EditTree();
 
 		t1.add('g');
@@ -1104,7 +1124,7 @@ public class EditTreeMilestone1Test {
 	}
 
 	@Test
-	public void testGetAfterRotations() {
+	public void testRotGetAfterRotations() {
 		EditTree t = new EditTree();
 		t.add('a');
 		t.add('b');
@@ -1229,7 +1249,7 @@ public class EditTreeMilestone1Test {
 	}
 
 	@Test
-	public void testManyRotations() {
+	public void testRotManyRotations() {
 		EditTree t = new EditTree();
 		t.add('J');
 		t.add('T');
@@ -1301,7 +1321,7 @@ public class EditTreeMilestone1Test {
 	private static final int SKIP_INTERVAL = 10;
 
 	@Test
-	public void testAddManyInc() {
+	public void testRotAddManyInc() {
 		EditTree t = new EditTree();
 		for (int k = 0; k < NUM_NODES; k++) {
 			t.add((char) k);
@@ -1314,7 +1334,7 @@ public class EditTreeMilestone1Test {
 	}
 
 	@Test
-	public void testAddManyDec() {
+	public void testRotAddManyDec() {
 		EditTree t = new EditTree();
 		for (int k = NUM_NODES; k > 0; k--) {
 			t.add((char) k);
@@ -1327,12 +1347,12 @@ public class EditTreeMilestone1Test {
 	}
 
 	/**
-	 * If a student should fail this test once, they might have reached the
-	 * rotation count outside of the tested range. If a student should failed
-	 * this test consistently - excessive rotations are being performed.
+	 * If a student should fail this test once, they might have reached the rotation
+	 * count outside of the tested range. If a student should failed this test
+	 * consistently - excessive rotations are being performed.
 	 */
 	@Test
-	public void testAddManyRandom() {
+	public void testRotAddManyRandom() {
 
 		EditTree t = new EditTree();
 		Random random = new Random();
@@ -1375,9 +1395,9 @@ public class EditTreeMilestone1Test {
 
 	@AfterClass
 	public static void printSummary() {
-		System.out.print("\n ===============     ");
+		System.out.println("\n=======================");
 		System.out.print("Total points: ");
-		System.out.printf("%.2f/%d\n", m1points, MAX_SCORE);
-		System.out.println("     ===============");
+		System.out.printf("%.1f/%d", m1points, MAX_SCORE);
+		System.out.println("\n=======================");
 	}
 }

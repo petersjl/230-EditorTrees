@@ -207,6 +207,13 @@ public class EditTree {
 	 * @return a new tree containing all of the elements of this tree whose
 	 *         positions are >= position. Their nodes are removed from this
 	 *         tree.
+	 * 
+	 *         IMPORTANT NOTE: Figure 7.20 in "Data Structures In Pascal" shows that
+	 *         the new tree gets all the elements in positions > pos, not >= pos.
+	 *         The JUnit tests expect >=, so add the element identified as 'd' (in
+	 *         Figure 7.20) to the new tree, do not add it to the original tree that
+	 *         is being split
+	 *
 	 * @throws IndexOutOfBoundsException
 	 */
 	public EditTree split(int pos) throws IndexOutOfBoundsException {
