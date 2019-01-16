@@ -1,5 +1,6 @@
 package editortrees;
 
+import editortrees.Node.Code;
 
 // A height-balanced binary tree with rank that could be the basis for a text editor.
 
@@ -279,5 +280,14 @@ public class EditTree {
 	 */
 	public Node getRoot() {
 		return this.root;
+	}
+	
+	public Node rotationRightSingle(Node parent) {
+		Node child = parent.left;
+		parent.left = child.right;
+		child.right = parent;
+		parent.balance = Code.SAME;
+		child.balance = Code.SAME;
+		return child;
 	}
 }
