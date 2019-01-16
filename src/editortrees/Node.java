@@ -110,16 +110,15 @@ public class Node {
 		if (!result.rotate) {
 			result.directions[1] = result.directions[0];
 			result.directions[0] = this.balance;
-		}
+		} else if (result.parent == NULL_NODE && result.node != this)
+			result.parent = this;
 		return result;
 	}
 
 	public String toString() {
-		if(this==NULL_NODE) {
-			return "";
-		}else {
-			return left.toString()+element+right.toString();
-		}
+		if (this == NULL_NODE) return "";
+		return (this.left != NULL_NODE ? this.left.toString() : "") + this.element + (this.right != NULL_NODE ? this.right.toString() : "");
+	}
 	}
 
 	public void toDebugString(StringBuilder build) {

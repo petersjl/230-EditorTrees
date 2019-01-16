@@ -91,6 +91,7 @@ public class EditTree {
 		root.toDebugString(build);
 		if(!build.toString().equals("[")) {
 			build.deleteCharAt(build.length()-2);
+			build.deleteCharAt(build.length()-1);
 		}
 		build.append("]");
 		return build.toString();
@@ -120,32 +121,46 @@ public class EditTree {
 		else {
 			AddResult result = this.root.add(ch, pos);
 			if (result.success && result.rotation != null) {
-				/*switch (result.rotation) {
+				Node node = Node.NULL_NODE;
+				switch (result.rotation) {
 					case LEFT_SINGLE:
-						this.rotationLeftSingle(result.node);
+						node = this.rotationLeftSingle(result.node);
 						break;
 					case LEFT_DOUBLE:
-						this.rotationLeftDouble(result.node);
+						//node = this.rotationLeftDouble(result.node);
+						node = result.node;
 						break;
 					case RIGHT_SINGLE:
-						this.rotationRightSingle(result.node);
+						node = this.rotationRightSingle(result.node);
 						break;
 					case RIGHT_DOUBLE:
+						//node = this.rotationRightDouble(result.node);
+						node = result.node;
 						break;
-				}*/
+				}
+				if (result.parent == Node.NULL_NODE) this.root = node;
+				else if (result.directions[0] == Code.LEFT) result.parent.left = node;
+				else if (result.directions[0] == Code.RIGHT) result.parent.right = node;
 			}
 		}
 	}
-	
-	//rotationleft
-	public Node rotationLeftSingle(Node rotationRoot) {
-		Node newRoot = new Node(rotationRoot.right.element);
-		newRoot.right=rotationRoot.right.right;
-		rotationRoot.right=rotationRoot.right.left;
-		newRoot.left=rotationRoot;
-		newRoot.balance=Code.SAME;
-		newRoot.left.balance=Code.SAME;
-		return newRoot;
+
+	public Node rotationLeftSingle(Node parent) {
+		Node child = parent.right;
+		parent.right = child.left;
+		child.left = parent;
+		parent.balance = Code.SAME;
+		child.balance = Code.SAME;
+		return child;
+	}
+
+	public Node rotationRightSingle(Node parent) {
+		Node child = parent.left;
+		parent.left = child.right;
+		child.right = parent;
+		parent.balance = Code.SAME;
+		child.balance = Code.SAME;
+		return child;
 	}
 	
 	public Node rotationLeftDouble(Node rotationRoot) {
@@ -157,6 +172,17 @@ public class EditTree {
 		newRoot.balance=Code.SAME;
 		newRoot.left.balance=Code.SAME;
 		return newRoot;	
+	}
+
+	public Node rotationRightDouble(Node rotationRoot) {
+		Node newRoot = new Node(rotationRoot.left.right.element);
+		newRoot.right = rotationRoot;
+		newRoot.left = rotationRoot.left;
+		newRoot.left.right=newRoot.left.right.left;
+		rotationRoot.left=rotationRoot.left.right.right;
+		newRoot.balance=Code.SAME;
+		newRoot.right.balance=Code.SAME;
+		return newRoot;
 	}
 	
 	
@@ -319,14 +345,5 @@ public class EditTree {
 	 */
 	public Node getRoot() {
 		return this.root;
-	}
-	
-	public Node rotationRightSingle(Node parent) {
-		Node child = parent.left;
-		parent.left = child.right;
-		child.right = parent;
-		parent.balance = Code.SAME;
-		child.balance = Code.SAME;
-		return child;
 	}
 }
