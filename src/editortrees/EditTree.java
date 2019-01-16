@@ -1,5 +1,6 @@
 package editortrees;
 
+import editortrees.Node.Code;
 
 // A height-balanced binary tree with rank that could be the basis for a text editor.
 
@@ -125,7 +126,30 @@ public class EditTree {
 	public void add(char ch, int pos) throws IndexOutOfBoundsException {
 
 	}
-
+	
+	//rotationleft
+	public Node rotationLeftSingle(Node rotationRoot) {
+		Node newRoot = new Node(rotationRoot.right.element);
+		newRoot.right=rotationRoot.right.right;
+		rotationRoot.right=rotationRoot.right.left;
+		newRoot.left=rotationRoot;
+		newRoot.balance=Code.SAME;
+		newRoot.left.balance=Code.SAME;
+		return newRoot;
+	}
+	
+	public Node rotationLeftDouble(Node rotationRoot) {
+		Node newRoot = new Node(rotationRoot.right.left.element);
+		newRoot.left = rotationRoot;
+		newRoot.right = rotationRoot.right;
+		newRoot.right.left=newRoot.right.left.right;
+		rotationRoot.right=rotationRoot.right.left.left;
+		newRoot.balance=Code.SAME;
+		newRoot.left.balance=Code.SAME;
+		return newRoot;	
+	}
+	
+	
 	/**
 	 * MILESTONE 1
 	 * @param pos
