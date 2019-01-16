@@ -102,7 +102,7 @@ public class EditTree {
 	 *            character to add to the end of this tree.
 	 */
 	public void add(char ch) {
-		this.add(ch, 0);
+		this.add(ch, -1);
 	}
 
 	/**

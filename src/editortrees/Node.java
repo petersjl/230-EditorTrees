@@ -58,7 +58,7 @@ public class Node {
 		return -1;
 	public Result<Node> add(char ch, int pos) {
 		Result<Node> result;
-		if (pos <= this.rank) {
+		if (pos <= this.rank && pos != -1) {
 			if (this.left != NULL_NODE) {
 				result = this.left.add(ch, pos);
 				if (result.getSuccess()) {
@@ -84,7 +84,6 @@ public class Node {
 				Node node = new Node(ch);
 				result.setResult(node);
 				result.setSuccess(true);
-				System.out.println(ch);
 				this.right = node;
 			}
 		}
