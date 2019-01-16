@@ -100,7 +100,7 @@ public class Node {
 
 	public void toDebugString(StringBuilder build) {
 		if(this!=NULL_NODE) {
-			build.append(element+rank+balance.toString()+", ");
+			build.append(""+element+rank+balance.toString()+", ");
 			left.toDebugString(build);
 			right.toDebugString(build);
 		}
