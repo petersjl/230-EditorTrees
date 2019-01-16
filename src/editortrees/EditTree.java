@@ -128,7 +128,7 @@ public class EditTree {
 	 * @throws IndexOutOfBoundsException
 	 */
 	public char get(int pos) throws IndexOutOfBoundsException {
-		return '%';
+		return this.root.get(pos);
 	}
 
 	/**
