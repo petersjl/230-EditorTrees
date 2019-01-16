@@ -5,7 +5,8 @@ package editortrees;
 // belong to two different trees.
 
 public class Node {
-	
+	public static final Node NULL_NODE = new Node();
+
 	enum Code {
 		SAME, LEFT, RIGHT;
 		// Used in the displayer and debug string
@@ -34,11 +35,23 @@ public class Node {
 	// Node parent;  // You may want this field.
 	// Feel free to add other fields that you find useful
 
-	// You will probably want to add several other methods
+	public Node() {
+//		this.element = null;
+		this.left = null;
+		this.right = null;
+//		this.rank = null;
+		this.balance = null;
+	}
 
-	// For the following methods, you should fill in the details so that they work correctly
+	public Node(char element) {
+		this.element = element;
+		this.left = NULL_NODE;
+		this.right = NULL_NODE;
+		this.balance = Code.SAME;
+	}
+
 	public int height() {
-		return -2;
+		return this == NULL_NODE ? 0 : 1 + Math.max(this.left.height(), this.right.height());
 	}
 
 	public int size() {

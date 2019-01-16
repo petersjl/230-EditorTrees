@@ -136,7 +136,7 @@ public class EditTree {
 	 * @return the height of this tree
 	 */
 	public int height() {
-		return -2; // replace by a real calculation.
+		return this.root.height() - 1;
 	}
 
 	/**
