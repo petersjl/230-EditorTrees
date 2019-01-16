@@ -6,7 +6,7 @@ import editortrees.Node.Code;
 
 public class EditTree {
 
-	private Node root;
+	private Node root = Node.NULL_NODE;
 
 	/**
 	 * MILESTONE 1
@@ -102,16 +102,7 @@ public class EditTree {
 	 *            character to add to the end of this tree.
 	 */
 	public void add(char ch) {
-		// Notes:
-		// 1. Please document chunks of code as you go. Why are you doing what
-		// you are doing? Comments written after the code is finalized tend to
-		// be useless, since they just say WHAT the code does, line by line,
-		// rather than WHY the code was written like that. Six months from now,
-		// it's the reasoning behind doing what you did that will be valuable to
-		// you!
-		// 2. Unit tests are cumulative, and many things are based on add(), so
-		// make sure that you get this one correct.
-
+		this.add(ch, 0);
 	}
 
 	/**
@@ -124,7 +115,10 @@ public class EditTree {
 	 *            if pos is negative or too large for this tree
 	 */
 	public void add(char ch, int pos) throws IndexOutOfBoundsException {
-
+		if (this.root == Node.NULL_NODE)
+			this.root = new Node(ch);
+		else
+			this.root.add(ch, pos);
 	}
 	
 	//rotationleft

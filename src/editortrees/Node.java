@@ -56,8 +56,41 @@ public class Node {
 
 	public int size() {
 		return -1;
+	public Result<Node> add(char ch, int pos) {
+		Result<Node> result;
+		if (pos <= this.rank) {
+			if (this.left != NULL_NODE) {
+				result = this.left.add(ch, pos);
+				if (result.getSuccess()) {
+					this.rank += 1;
+					// TODO: Check balance
+				}
+			} else {
+				result = new Result<>();
+				Node node = new Node(ch);
+				result.setResult(node);
+				result.setSuccess(true);
+				this.rank += 1;
+				this.left = node;
+			}
+		} else {
+			if (this.right != NULL_NODE) {
+				result = this.right.add(ch, pos - this.rank - 1);
+				if (result.getSuccess()) {
+					// TODO: Check balance
+				}
+			} else {
+				result = new Result<>();
+				Node node = new Node(ch);
+				result.setResult(node);
+				result.setSuccess(true);
+				System.out.println(ch);
+				this.right = node;
+			}
+		}
+		return result;
 	}
-	
+
 	public String toString() {
 		if(this==NULL_NODE) {
 			return "";
