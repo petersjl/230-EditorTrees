@@ -57,5 +57,20 @@ public class Node {
 	public int size() {
 		return -1;
 	}
+	
+	public String toString() {
+		if(this==NULL_NODE) {
+			return "";
+		}else {
+			return left.toString()+element+right.toString();
+		}
+	}
 
+	public void toDebugString(StringBuilder build) {
+		if(this!=NULL_NODE) {
+			build.append(element+rank+balance.toString()+", ");
+			left.toDebugString(build);
+			right.toDebugString(build);
+		}
+	}
 }

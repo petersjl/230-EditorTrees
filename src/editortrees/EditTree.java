@@ -12,7 +12,7 @@ public class EditTree {
 	 * Construct an empty tree
 	 */
 	public EditTree() {
-		
+		root=Node.NULL_NODE;
 	}
 
 	/**
@@ -22,7 +22,7 @@ public class EditTree {
 	 * @param ch
 	 */
 	public EditTree(char ch) {
-
+		root=new Node(ch);
 	}
 
 	/**
@@ -65,8 +65,7 @@ public class EditTree {
 	 */
 	@Override
 	public String toString() {
-		return null; // replace by a real calculation.
-
+		return root.toString();
 	}
 
 	/**
@@ -86,7 +85,14 @@ public class EditTree {
 	 *         a pre-order traversal of the tree.
 	 */
 	public String toDebugString() {
-		return null;
+		StringBuilder build = new StringBuilder();
+		build.append("[");
+		root.toDebugString(build);
+		if(!build.toString().equals("[")) {
+			build.deleteCharAt(build.length()-2);
+		}
+		build.append("]");
+		return build.toString();
 	}
 
 	/**
