@@ -13,7 +13,7 @@ public class EditTree {
 	 * Construct an empty tree
 	 */
 	public EditTree() {
-		
+		root=Node.NULL_NODE;
 	}
 
 	/**
@@ -23,7 +23,7 @@ public class EditTree {
 	 * @param ch
 	 */
 	public EditTree(char ch) {
-
+		root=new Node(ch);
 	}
 
 	/**
@@ -66,8 +66,7 @@ public class EditTree {
 	 */
 	@Override
 	public String toString() {
-		return null; // replace by a real calculation.
-
+		return root.toString();
 	}
 
 	/**
@@ -87,7 +86,14 @@ public class EditTree {
 	 *         a pre-order traversal of the tree.
 	 */
 	public String toDebugString() {
-		return null;
+		StringBuilder build = new StringBuilder();
+		build.append("[");
+		root.toDebugString(build);
+		if(!build.toString().equals("[")) {
+			build.deleteCharAt(build.length()-2);
+		}
+		build.append("]");
+		return build.toString();
 	}
 
 	/**
@@ -120,7 +126,30 @@ public class EditTree {
 	public void add(char ch, int pos) throws IndexOutOfBoundsException {
 
 	}
-
+	
+	//rotationleft
+	public Node rotationLeftSingle(Node rotationRoot) {
+		Node newRoot = new Node(rotationRoot.right.element);
+		newRoot.right=rotationRoot.right.right;
+		rotationRoot.right=rotationRoot.right.left;
+		newRoot.left=rotationRoot;
+		newRoot.balance=Code.SAME;
+		newRoot.left.balance=Code.SAME;
+		return newRoot;
+	}
+	
+	public Node rotationLeftDouble(Node rotationRoot) {
+		Node newRoot = new Node(rotationRoot.right.left.element);
+		newRoot.left = rotationRoot;
+		newRoot.right = rotationRoot.right;
+		newRoot.right.left=newRoot.right.left.right;
+		rotationRoot.right=rotationRoot.right.left.left;
+		newRoot.balance=Code.SAME;
+		newRoot.left.balance=Code.SAME;
+		return newRoot;	
+	}
+	
+	
 	/**
 	 * MILESTONE 1
 	 * @param pos
