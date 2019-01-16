@@ -7,6 +7,7 @@ import editortrees.Node.Code;
 public class EditTree {
 
 	private Node root = Node.NULL_NODE;
+	private int rotationCount = 0;
 
 	/**
 	 * MILESTONE 1
@@ -57,7 +58,7 @@ public class EditTree {
 	 * @return number of rotations since this tree was created.
 	 */
 	public int totalRotationCount() {
-		return -1; // replace by a real calculation.
+		return this.rotationCount; // replace by a real calculation.
 	}
 
 	/**
@@ -151,6 +152,7 @@ public class EditTree {
 		child.left = parent;
 		parent.balance = Code.SAME;
 		child.balance = Code.SAME;
+		this.rotationCount++;
 		return child;
 	}
 
@@ -160,6 +162,7 @@ public class EditTree {
 		child.right = parent;
 		parent.balance = Code.SAME;
 		child.balance = Code.SAME;
+		this.rotationCount++;
 		return child;
 	}
 	
@@ -171,6 +174,7 @@ public class EditTree {
 		rotationRoot.right=rotationRoot.right.left.left;
 		newRoot.balance=Code.SAME;
 		newRoot.left.balance=Code.SAME;
+		this.rotationCount += 2;
 		return newRoot;	
 	}
 
@@ -182,6 +186,7 @@ public class EditTree {
 		rotationRoot.left=rotationRoot.left.right.right;
 		newRoot.balance=Code.SAME;
 		newRoot.right.balance=Code.SAME;
+		this.rotationCount += 2;
 		return newRoot;
 	}
 	
