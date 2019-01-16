@@ -117,8 +117,24 @@ public class EditTree {
 	public void add(char ch, int pos) throws IndexOutOfBoundsException {
 		if (this.root == Node.NULL_NODE)
 			this.root = new Node(ch);
-		else
-			this.root.add(ch, pos);
+		else {
+			AddResult result = this.root.add(ch, pos);
+			if (result.success && result.rotation != null) {
+				/*switch (result.rotation) {
+					case LEFT_SINGLE:
+						this.rotationLeftSingle(result.node);
+						break;
+					case LEFT_DOUBLE:
+						this.rotationLeftDouble(result.node);
+						break;
+					case RIGHT_SINGLE:
+						this.rotationRightSingle(result.node);
+						break;
+					case RIGHT_DOUBLE:
+						break;
+				}*/
+			}
+		}
 	}
 	
 	//rotationleft

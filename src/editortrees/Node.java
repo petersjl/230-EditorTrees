@@ -36,10 +36,8 @@ public class Node {
 	// Feel free to add other fields that you find useful
 
 	public Node() {
-//		this.element = null;
 		this.left = null;
 		this.right = null;
-//		this.rank = null;
 		this.balance = null;
 	}
 
@@ -56,36 +54,62 @@ public class Node {
 
 	public int size() {
 		return -1;
-	public Result<Node> add(char ch, int pos) {
-		Result<Node> result;
-		if (pos <= this.rank && pos != -1) {
+	}
+
+	public AddResult add(char ch, int pos) {
+		AddResult result;
+		if (pos <= this.rank && pos >= 0) {
 			if (this.left != NULL_NODE) {
 				result = this.left.add(ch, pos);
-				if (result.getSuccess()) {
+				if (result.success) {
 					this.rank += 1;
-					// TODO: Check balance
+					switch(this.balance) {
+						case LEFT:
+							if (!result.rotate) result.setValues(this);
+							break;
+						case RIGHT:
+							this.balance = Code.SAME;
+							break;
+						default:
+							this.balance = Code.LEFT;
+							break;
+					}
 				}
 			} else {
-				result = new Result<>();
+				result = new AddResult();
 				Node node = new Node(ch);
-				result.setResult(node);
-				result.setSuccess(true);
+				result.success = true;
 				this.rank += 1;
 				this.left = node;
+				this.balance = (this.balance == Code.SAME) ? Code.LEFT : Code.SAME;
 			}
 		} else {
 			if (this.right != NULL_NODE) {
 				result = this.right.add(ch, pos - this.rank - 1);
-				if (result.getSuccess()) {
-					// TODO: Check balance
+				if (result.success) {
+					switch(this.balance) {
+						case LEFT:
+							this.balance = Code.SAME;
+							break;
+						case RIGHT:
+							if (!result.rotate) result.setValues(this);
+							break;
+						default:
+							this.balance = Code.RIGHT;
+							break;
+					}
 				}
 			} else {
-				result = new Result<>();
+				result = new AddResult();
 				Node node = new Node(ch);
-				result.setResult(node);
-				result.setSuccess(true);
+				result.success = true;
 				this.right = node;
+				this.balance = (this.balance == Code.SAME) ? Code.RIGHT : Code.SAME;
 			}
+		}
+		if (!result.rotate) {
+			result.directions[1] = result.directions[0];
+			result.directions[0] = this.balance;
 		}
 		return result;
 	}
