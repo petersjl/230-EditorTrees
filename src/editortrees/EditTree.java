@@ -169,25 +169,37 @@ public class EditTree {
 	}
 	
 	public Node rotationLeftDouble(Node rotationRoot) {
+		if(rotationRoot.right.left.balance==Code.LEFT) {
+			rotationRoot.balance=Code.SAME;
+			rotationRoot.right.balance=Code.RIGHT;
+		}else if(rotationRoot.right.left.balance==Code.RIGHT) {
+			rotationRoot.balance=Code.LEFT;
+			rotationRoot.right.balance=Code.SAME;		
+		}
 		Node newRoot = new Node(rotationRoot.right.left.element);
 		newRoot.left = rotationRoot;
 		newRoot.right = rotationRoot.right;
 		newRoot.right.left=newRoot.right.left.right;
 		rotationRoot.right=rotationRoot.right.left.left;
 		newRoot.balance=Code.SAME;
-		newRoot.left.balance=Code.SAME;
 		this.rotationCount += 2;
 		return newRoot;	
 	}
 
 	public Node rotationRightDouble(Node rotationRoot) {
+		if(rotationRoot.left.right.balance==Code.LEFT) {
+			rotationRoot.left.balance=Code.SAME;
+			rotationRoot.balance=Code.RIGHT;
+		}else if(rotationRoot.left.right.balance==Code.RIGHT) {
+			rotationRoot.balance=Code.SAME;
+			rotationRoot.right.balance=Code.LEFT;
+		}
 		Node newRoot = new Node(rotationRoot.left.right.element);
 		newRoot.right = rotationRoot;
 		newRoot.left = rotationRoot.left;
 		newRoot.left.right=newRoot.left.right.left;
 		rotationRoot.left=rotationRoot.left.right.right;
 		newRoot.balance=Code.SAME;
-		newRoot.right.balance=Code.SAME;
 		this.rotationCount += 2;
 		return newRoot;
 	}
