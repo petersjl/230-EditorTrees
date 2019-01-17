@@ -1,18 +1,20 @@
 package editortrees;
 
+import editortrees.Node.Code;
 
 // A height-balanced binary tree with rank that could be the basis for a text editor.
 
 public class EditTree {
 
-	private Node root;
+	private Node root = Node.NULL_NODE;
+	private int rotationCount = 0;
 
 	/**
 	 * MILESTONE 1
 	 * Construct an empty tree
 	 */
 	public EditTree() {
-		
+		root=Node.NULL_NODE;
 	}
 
 	/**
@@ -22,7 +24,7 @@ public class EditTree {
 	 * @param ch
 	 */
 	public EditTree(char ch) {
-
+		root=new Node(ch);
 	}
 
 	/**
@@ -56,7 +58,7 @@ public class EditTree {
 	 * @return number of rotations since this tree was created.
 	 */
 	public int totalRotationCount() {
-		return -1; // replace by a real calculation.
+		return this.rotationCount; // replace by a real calculation.
 	}
 
 	/**
@@ -65,8 +67,7 @@ public class EditTree {
 	 */
 	@Override
 	public String toString() {
-		return null; // replace by a real calculation.
-
+		return root.toString();
 	}
 
 	/**
@@ -86,7 +87,15 @@ public class EditTree {
 	 *         a pre-order traversal of the tree.
 	 */
 	public String toDebugString() {
-		return null;
+		StringBuilder build = new StringBuilder();
+		build.append("[");
+		root.toDebugString(build);
+		if(!build.toString().equals("[")) {
+			build.deleteCharAt(build.length()-2);
+			build.deleteCharAt(build.length()-1);
+		}
+		build.append("]");
+		return build.toString();
 	}
 
 	/**
@@ -95,16 +104,7 @@ public class EditTree {
 	 *            character to add to the end of this tree.
 	 */
 	public void add(char ch) {
-		// Notes:
-		// 1. Please document chunks of code as you go. Why are you doing what
-		// you are doing? Comments written after the code is finalized tend to
-		// be useless, since they just say WHAT the code does, line by line,
-		// rather than WHY the code was written like that. Six months from now,
-		// it's the reasoning behind doing what you did that will be valuable to
-		// you!
-		// 2. Unit tests are cumulative, and many things are based on add(), so
-		// make sure that you get this one correct.
-
+		this.add(ch, Math.max(this.size(), 0));
 	}
 
 	/**
@@ -117,9 +117,83 @@ public class EditTree {
 	 *            if pos is negative or too large for this tree
 	 */
 	public void add(char ch, int pos) throws IndexOutOfBoundsException {
-
+		if (this.root == Node.NULL_NODE)
+			if (pos == 0) this.root = new Node(ch);
+			else throw new IndexOutOfBoundsException();
+		else {
+			AddResult result = this.root.add(ch, pos);
+			if (result.success && result.rotation != null) {
+				Node node = Node.NULL_NODE;
+				switch (result.rotation) {
+					case LEFT_SINGLE:
+						node = this.rotationLeftSingle(result.node);
+						break;
+					case LEFT_DOUBLE:
+						System.out.println("DL");
+						node = this.rotationLeftDouble(result.node);
+						break;
+					case RIGHT_SINGLE:
+						node = this.rotationRightSingle(result.node);
+						break;
+					case RIGHT_DOUBLE:
+						System.out.println("DR");
+						node = this.rotationRightDouble(result.node);
+						break;
+				}
+				if (result.parent == Node.NULL_NODE) this.root = node;
+				else {
+					switch (result.rotation) {
+						case LEFT_SINGLE:
+						case LEFT_DOUBLE: {
+							if (result.parent.left == node.left) result.parent.left = node;
+							else result.parent.right = node;
+							break;
+						}
+						case RIGHT_SINGLE:
+						case RIGHT_DOUBLE: {
+							if (result.parent.right == node.right) result.parent.right = node;
+							else result.parent.left = node;
+							break;
+						}
+					}
+				}
+			}
+		}
 	}
 
+	public Node rotationLeftSingle(Node parent) {
+		Node child = parent.right;
+		parent.right = child.left;
+		child.left = parent;
+		parent.balance = Code.SAME;
+		child.balance = Code.SAME;
+		child.rank += parent.rank + 1;
+		this.rotationCount++;
+		return child;
+	}
+
+	public Node rotationRightSingle(Node parent) {
+		Node child = parent.left;
+		parent.left = child.right;
+		child.right = parent;
+		parent.balance = Code.SAME;
+		child.balance = Code.SAME;
+		parent.rank -= child.rank + 1;
+		this.rotationCount++;
+		return child;
+	}
+
+	public Node rotationLeftDouble(Node parent) {
+		parent.right = this.rotationRightSingle(parent.right);
+		Node node = this.rotationLeftSingle(parent);
+	}
+
+	public Node rotationRightDouble(Node parent) {
+		parent.left = this.rotationLeftSingle(parent.left);
+		return this.rotationRightSingle(parent);
+	}
+	
+	
 	/**
 	 * MILESTONE 1
 	 * @param pos
@@ -128,7 +202,10 @@ public class EditTree {
 	 * @throws IndexOutOfBoundsException
 	 */
 	public char get(int pos) throws IndexOutOfBoundsException {
-		return '%';
+		if (this.root == Node.NULL_NODE) throw new IndexOutOfBoundsException();
+		Result result = this.root.get(pos);
+		if (result.getSuccess()) return (char) result.getResult();
+		return 0;
 	}
 
 	/**
@@ -136,7 +213,7 @@ public class EditTree {
 	 * @return the height of this tree
 	 */
 	public int height() {
-		return -2; // replace by a real calculation.
+		return this.root.height() - 1;
 	}
 
 	/**
@@ -145,7 +222,7 @@ public class EditTree {
 	 *         not counting the NULL_NODE if you have one.
 	 */
 	public int size() {
-		return -1; // replace by a real calculation.
+		return (this.root != Node.NULL_NODE) ? this.root.size() : 0; // replace by a real calculation.
 	}
 	
 	
