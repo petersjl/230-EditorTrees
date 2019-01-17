@@ -38,7 +38,7 @@ public class Node {
 	public Node() {
 		this.left = null;
 		this.right = null;
-		this.balance = null;
+		this.balance = Code.SAME;
 	}
 
 	public Node(char element) {
@@ -53,7 +53,7 @@ public class Node {
 	}
 
 	public int size() {
-		return -1;
+		return 1 + this.rank + (this.right != NULL_NODE ? this.right.size() : 0);
 	}
 
 	public AddResult add(char ch, int pos) {
@@ -106,7 +106,9 @@ public class Node {
 							break;
 					}
 				}
-			} else {
+			} /*else if (pos > this.rank + 2) {
+				throw new IndexOutOfBoundsException();
+			}*/ else {
 				result = new AddResult();
 				Node node = new Node(ch);
 				result.success = true;

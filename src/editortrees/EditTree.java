@@ -104,7 +104,7 @@ public class EditTree {
 	 *            character to add to the end of this tree.
 	 */
 	public void add(char ch) {
-		this.add(ch, -1);
+		this.add(ch, Math.max(this.size(), 0));
 	}
 
 	/**
@@ -118,7 +118,8 @@ public class EditTree {
 	 */
 	public void add(char ch, int pos) throws IndexOutOfBoundsException {
 		if (this.root == Node.NULL_NODE)
-			this.root = new Node(ch);
+			if (pos == 0) this.root = new Node(ch);
+			else throw new IndexOutOfBoundsException();
 		else {
 			AddResult result = this.root.add(ch, pos);
 			if (result.success && result.rotation != null) {
@@ -129,14 +130,14 @@ public class EditTree {
 						break;
 					case LEFT_DOUBLE:
 						System.out.println("DL");
-						node = this.rLD(result.node);
+						node = this.rotationLeftDouble(result.node);
 						break;
 					case RIGHT_SINGLE:
 						node = this.rotationRightSingle(result.node);
 						break;
 					case RIGHT_DOUBLE:
 						System.out.println("DR");
-						node = this.rRD(result.node);
+						node = this.rotationRightDouble(result.node);
 						break;
 				}
 				if (result.parent == Node.NULL_NODE) this.root = node;
@@ -184,7 +185,7 @@ public class EditTree {
 
 	public Node rotationLeftDouble(Node parent) {
 		parent.right = this.rotationRightSingle(parent.right);
-		return this.rotationLeftSingle(parent);
+		Node node = this.rotationLeftSingle(parent);
 	}
 
 	public Node rotationRightDouble(Node parent) {
@@ -221,7 +222,7 @@ public class EditTree {
 	 *         not counting the NULL_NODE if you have one.
 	 */
 	public int size() {
-		return -1; // replace by a real calculation.
+		return (this.root != Node.NULL_NODE) ? this.root.size() : 0; // replace by a real calculation.
 	}
 	
 	
