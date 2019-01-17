@@ -140,8 +140,22 @@ public class EditTree {
 						break;
 				}
 				if (result.parent == Node.NULL_NODE) this.root = node;
-				else if (result.directions[0] == Code.LEFT) result.parent.left = node;
-				else if (result.directions[0] == Code.RIGHT) result.parent.right = node;
+				else {
+					switch (result.rotation) {
+						case LEFT_SINGLE:
+						case LEFT_DOUBLE: {
+							if (result.parent.left == node.left) result.parent.left = node;
+							else result.parent.right = node;
+							break;
+						}
+						case RIGHT_SINGLE:
+						case RIGHT_DOUBLE: {
+							if (result.parent.right == node.right) result.parent.right = node;
+							else result.parent.left = node;
+							break;
+						}
+					}
+				}
 			}
 		}
 	}

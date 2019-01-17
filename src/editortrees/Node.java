@@ -61,14 +61,15 @@ public class Node {
 		if (pos <= this.rank && pos >= 0) {
 			if (this.left != NULL_NODE) {
 				result = this.left.add(ch, pos);
-				if (result.success) {
-					this.rank += 1;
-					switch(this.balance) {
+				if (result.success) this.rank += 1;
+				if (result.success && !result.balanced) {
+					switch (this.balance) {
 						case LEFT:
 							if (!result.rotate) result.setValues(this);
 							break;
 						case RIGHT:
 							this.balance = Code.SAME;
+							result.balanced = true;
 							break;
 						default:
 							this.balance = Code.LEFT;
@@ -81,15 +82,21 @@ public class Node {
 				result.success = true;
 				this.rank += 1;
 				this.left = node;
-				this.balance = (this.balance == Code.SAME) ? Code.LEFT : Code.SAME;
+				if (this.balance == Code.SAME) {
+					this.balance = Code.LEFT;
+				} else {
+					this.balance = Code.SAME;
+					result.balanced = true;
+				}
 			}
 		} else {
 			if (this.right != NULL_NODE) {
 				result = this.right.add(ch, pos - this.rank - 1);
-				if (result.success) {
-					switch(this.balance) {
+				if (result.success && !result.balanced) {
+					switch (this.balance) {
 						case LEFT:
 							this.balance = Code.SAME;
+							result.balanced = true;
 							break;
 						case RIGHT:
 							if (!result.rotate) result.setValues(this);
@@ -104,13 +111,19 @@ public class Node {
 				Node node = new Node(ch);
 				result.success = true;
 				this.right = node;
-				this.balance = (this.balance == Code.SAME) ? Code.RIGHT : Code.SAME;
+				if (this.balance == Code.SAME) {
+					this.balance = Code.RIGHT;
+				} else {
+					this.balance = Code.SAME;
+					result.balanced = true;
+				}
 			}
 		}
-		if (!result.rotate) {
+		if (!result.rotate && !result.balanced) {
 			result.directions[1] = result.directions[0];
 			result.directions[0] = this.balance;
-		} else if (result.parent == NULL_NODE && result.node != this)
+		}
+		if (!result.balanced && result.rotate && result.parent == NULL_NODE && result.node != this)
 			result.parent = this;
 		return result;
 	}
