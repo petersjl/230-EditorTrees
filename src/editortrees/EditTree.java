@@ -186,6 +186,7 @@ public class EditTree {
 	public Node rotationLeftDouble(Node parent) {
 		parent.right = this.rotationRightSingle(parent.right);
 		Node node = this.rotationLeftSingle(parent);
+		return node;
 	}
 
 	public Node rotationRightDouble(Node parent) {

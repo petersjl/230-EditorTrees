@@ -50,7 +50,6 @@ public class SimpleTest {
 		t.add('i',0);
 		t.add('j');
 		t.add('k',4);
-		System.out.println(t.getRoot().toTestString2());
 		System.out.println(t.toDebugString());
 		/*System.out.println(t.getRoot().toTestString());
 		System.out.println(t.get(0));
