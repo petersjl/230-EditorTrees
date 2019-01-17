@@ -152,6 +152,7 @@ public class EditTree {
 		child.left = parent;
 		parent.balance = Code.SAME;
 		child.balance = Code.SAME;
+		child.rank += parent.rank + 1;
 		this.rotationCount++;
 		return child;
 	}
@@ -162,6 +163,7 @@ public class EditTree {
 		child.right = parent;
 		parent.balance = Code.SAME;
 		child.balance = Code.SAME;
+		parent.rank -= child.rank + 1;
 		this.rotationCount++;
 		return child;
 	}
@@ -199,7 +201,9 @@ public class EditTree {
 	 * @throws IndexOutOfBoundsException
 	 */
 	public char get(int pos) throws IndexOutOfBoundsException {
-		return '%';
+		Result result = this.root.get(pos);
+		if (result.getSuccess()) return (char) result.getResult();
+		return 0;
 	}
 
 	/**

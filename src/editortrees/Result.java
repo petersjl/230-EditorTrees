@@ -8,15 +8,17 @@ public class Result<T> {
 		return this.value;
 	}
 
-	public void setResult(T value) {
+	public Result<T> setResult(T value) {
 		this.value = value;
+		return this;
 	}
 
 	public boolean getSuccess() {
 		return this.success;
 	}
 
-	public void setSuccess(boolean success) {
+	public Result<T> setSuccess(boolean success) {
 		this.success = success;
+		return this;
 	}
 }

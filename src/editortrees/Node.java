@@ -115,6 +115,16 @@ public class Node {
 		return result;
 	}
 
+	public Result get(int pos) throws IndexOutOfBoundsException {
+		if (pos == this.rank) return new Result().setSuccess(true).setResult(this.element);
+		else if (pos < this.rank) {
+			if (this.left != NULL_NODE) return this.left.get(pos);
+		} else {
+			if (this.right != NULL_NODE) return this.right.get(pos - this.rank - 1);
+		}
+		throw new IndexOutOfBoundsException();
+	}
+
 	public String toString() {
 		if (this == NULL_NODE) return "";
 		return (this.left != NULL_NODE ? this.left.toString() : "") + this.element + (this.right != NULL_NODE ? this.right.toString() : "");
