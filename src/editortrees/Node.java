@@ -31,9 +31,7 @@ public class Node {
 	char element;            
 	Node left, right; // subtrees
 	int rank;         // inorder position of this node within its own subtree.
-	Code balance; 
-	// Node parent;  // You may want this field.
-	// Feel free to add other fields that you find useful
+	Code balance;     // the direction this tree is leaning
 
 	public Node() {
 		this.left = null;
@@ -82,9 +80,8 @@ public class Node {
 				result.success = true;
 				this.rank += 1;
 				this.left = node;
-				if (this.balance == Code.SAME) {
-					this.balance = Code.LEFT;
-				} else {
+				if (this.balance == Code.SAME) this.balance = Code.LEFT;
+				else {
 					this.balance = Code.SAME;
 					result.balanced = true;
 				}
@@ -106,16 +103,14 @@ public class Node {
 							break;
 					}
 				}
-			} else if (pos > this.rank + 1) {
-				throw new IndexOutOfBoundsException();
-			} else {
+			} else if (pos > this.rank + 1) throw new IndexOutOfBoundsException();
+			else {
 				result = new AddResult();
 				Node node = new Node(ch);
 				result.success = true;
 				this.right = node;
-				if (this.balance == Code.SAME) {
-					this.balance = Code.RIGHT;
-				} else {
+				if (this.balance == Code.SAME) this.balance = Code.RIGHT;
+				else {
 					this.balance = Code.SAME;
 					result.balanced = true;
 				}
@@ -125,18 +120,14 @@ public class Node {
 			result.directions[1] = result.directions[0];
 			result.directions[0] = this.balance;
 		}
-		if (result.rotate && result.parent == NULL_NODE && result.node != this)
-			result.parent = this;
+		if (result.rotate && result.parent == NULL_NODE && result.node != this) result.parent = this;
 		return result;
 	}
 
 	public Result get(int pos) throws IndexOutOfBoundsException {
 		if (pos == this.rank) return new Result().setSuccess(true).setResult(this.element);
-		else if (pos < this.rank) {
-			if (this.left != NULL_NODE) return this.left.get(pos);
-		} else {
-			if (this.right != NULL_NODE) return this.right.get(pos - this.rank - 1);
-		}
+		else if (pos < this.rank) { if (this.left != NULL_NODE) return this.left.get(pos); }
+		else { if (this.right != NULL_NODE) return this.right.get(pos - this.rank - 1); }
 		throw new IndexOutOfBoundsException();
 	}
 

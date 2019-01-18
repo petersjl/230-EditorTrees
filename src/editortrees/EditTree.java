@@ -6,7 +6,7 @@ import editortrees.Node.Code;
 
 public class EditTree {
 
-	private Node root = Node.NULL_NODE;
+	private Node root;
 	private int rotationCount = 0;
 
 	/**
@@ -14,7 +14,7 @@ public class EditTree {
 	 * Construct an empty tree
 	 */
 	public EditTree() {
-		root=Node.NULL_NODE;
+		this.root = Node.NULL_NODE;
 	}
 
 	/**
@@ -24,7 +24,7 @@ public class EditTree {
 	 * @param ch
 	 */
 	public EditTree(char ch) {
-		root=new Node(ch);
+		this.root = new Node(ch);
 	}
 
 	/**
@@ -90,9 +90,9 @@ public class EditTree {
 		StringBuilder build = new StringBuilder();
 		build.append("[");
 		root.toDebugString(build);
-		if(!build.toString().equals("[")) {
-			build.deleteCharAt(build.length()-2);
-			build.deleteCharAt(build.length()-1);
+		if (!build.toString().equals("[")) {
+			build.deleteCharAt(build.length() - 2);
+			build.deleteCharAt(build.length() - 1);
 		}
 		build.append("]");
 		return build.toString();
@@ -203,7 +203,7 @@ public class EditTree {
 		if (this.root == Node.NULL_NODE) throw new IndexOutOfBoundsException();
 		Result result = this.root.get(pos);
 		if (result.getSuccess()) return (char) result.getResult();
-		return 0;
+		throw new IndexOutOfBoundsException();
 	}
 
 	/**
@@ -220,7 +220,7 @@ public class EditTree {
 	 *         not counting the NULL_NODE if you have one.
 	 */
 	public int size() {
-		return (this.root != Node.NULL_NODE) ? this.root.size() : 0; // replace by a real calculation.
+		return (this.root != Node.NULL_NODE) ? this.root.size() : 0;
 	}
 	
 	
