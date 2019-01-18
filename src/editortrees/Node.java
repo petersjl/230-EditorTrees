@@ -56,11 +56,12 @@ public class Node {
 
 	public AddResult add(char ch, int pos) {
 		AddResult result;
+		// Check which subtree to continue down
 		if (pos <= this.rank && pos >= 0) {
-			if (this.left != NULL_NODE) {
-				result = this.left.add(ch, pos);
+			if (this.left != NULL_NODE) { // If we have not yet reached the end of the subtree
+				result = this.left.add(ch, pos); // Recursion
 				if (result.success) this.rank += 1;
-				if (result.success && !result.balanced) {
+				if (result.success && !result.balanced) { // Check if we have not already set up a re-balance
 					switch (this.balance) {
 						case LEFT:
 							if (!result.rotate) result.setValues(this);
@@ -74,7 +75,7 @@ public class Node {
 							break;
 					}
 				}
-			} else {
+			} else { // Add new node to the tree
 				result = new AddResult();
 				Node node = new Node(ch);
 				result.success = true;
@@ -86,10 +87,10 @@ public class Node {
 					result.balanced = true;
 				}
 			}
-		} else {
-			if (this.right != NULL_NODE) {
-				result = this.right.add(ch, pos - this.rank - 1);
-				if (result.success && !result.balanced) {
+		} else { // Go down right subtree
+			if (this.right != NULL_NODE) { // If we have not yet reached the end of the subtree
+				result = this.right.add(ch, pos - this.rank - 1); // Recursion with new position value
+				if (result.success && !result.balanced) { // Check if we have not already set up a re-balance
 					switch (this.balance) {
 						case LEFT:
 							this.balance = Code.SAME;
@@ -103,8 +104,8 @@ public class Node {
 							break;
 					}
 				}
-			} else if (pos > this.rank + 1) throw new IndexOutOfBoundsException();
-			else {
+			} else if (pos > this.rank + 1) throw new IndexOutOfBoundsException(); // Check if pos is too high
+			else { // Add new node to the tree
 				result = new AddResult();
 				Node node = new Node(ch);
 				result.success = true;
@@ -116,19 +117,19 @@ public class Node {
 				}
 			}
 		}
-		if (!result.rotate && !result.balanced) {
+		if (!result.rotate && !result.balanced) { // Reassign pointers to previous two Code values
 			result.directions[1] = result.directions[0];
 			result.directions[0] = this.balance;
 		}
-		if (result.rotate && result.parent == NULL_NODE && result.node != this) result.parent = this;
+		if (result.rotate && result.parent == NULL_NODE && result.node != this) result.parent = this; // Set parent if necessary
 		return result;
 	}
 
 	public Result get(int pos) throws IndexOutOfBoundsException {
-		if (pos == this.rank) return new Result().setSuccess(true).setResult(this.element);
-		else if (pos < this.rank) { if (this.left != NULL_NODE) return this.left.get(pos); }
-		else { if (this.right != NULL_NODE) return this.right.get(pos - this.rank - 1); }
-		throw new IndexOutOfBoundsException();
+		if (pos == this.rank) return new Result().setSuccess(true).setResult(this.element); // Base case
+		else if (pos < this.rank) { if (this.left != NULL_NODE) return this.left.get(pos); } // Recurse down left
+		else { if (this.right != NULL_NODE) return this.right.get(pos - this.rank - 1); } // Recurse down right
+		throw new IndexOutOfBoundsException(); // Throw exception if not found
 	}
 
 	public String toString() {

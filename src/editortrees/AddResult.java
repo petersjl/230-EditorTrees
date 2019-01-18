@@ -1,5 +1,8 @@
 package editortrees;
 
+// This class is used to keep track of the values needed to know how to rotate
+// It allows us to see what kind of rotation by keeping track of the previous two Code values when going out of the recursion
+
 public class AddResult {
 	public enum Rotation {LEFT_SINGLE, LEFT_DOUBLE, RIGHT_SINGLE, RIGHT_DOUBLE}
 

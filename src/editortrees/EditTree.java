@@ -122,7 +122,9 @@ public class EditTree {
 			if (pos == 0) this.root = new Node(ch);
 			else throw new IndexOutOfBoundsException();
 		else {
+			// Get result data from Node add()
 			AddResult result = this.root.add(ch, pos);
+			// check if successful and if there needs to be a rotation
 			if (result.success && result.rotation != null) {
 				Node node = Node.NULL_NODE;
 				switch (result.rotation) {
@@ -141,6 +143,7 @@ public class EditTree {
 				}
 				if (result.parent == Node.NULL_NODE) this.root = node;
 				else {
+					// Perform re-add operation on rebalanced node
 					switch (result.rotation) {
 						case LEFT_SINGLE:
 						case LEFT_DOUBLE: {
