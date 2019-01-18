@@ -6,7 +6,7 @@ import editortrees.Node.Code;
 
 public class EditTree {
 
-	private Node root = Node.NULL_NODE;
+	private Node root;
 	private int rotationCount = 0;
 
 	/**
@@ -14,7 +14,7 @@ public class EditTree {
 	 * Construct an empty tree
 	 */
 	public EditTree() {
-		root=Node.NULL_NODE;
+		this.root = Node.NULL_NODE;
 	}
 
 	/**
@@ -24,7 +24,7 @@ public class EditTree {
 	 * @param ch
 	 */
 	public EditTree(char ch) {
-		root=new Node(ch);
+		this.root = new Node(ch);
 	}
 
 	/**
@@ -90,9 +90,9 @@ public class EditTree {
 		StringBuilder build = new StringBuilder();
 		build.append("[");
 		root.toDebugString(build);
-		if(!build.toString().equals("[")) {
-			build.deleteCharAt(build.length()-2);
-			build.deleteCharAt(build.length()-1);
+		if (!build.toString().equals("[")) {
+			build.deleteCharAt(build.length() - 2);
+			build.deleteCharAt(build.length() - 1);
 		}
 		build.append("]");
 		return build.toString();
@@ -117,11 +117,14 @@ public class EditTree {
 	 *            if pos is negative or too large for this tree
 	 */
 	public void add(char ch, int pos) throws IndexOutOfBoundsException {
+		if (pos < 0) throw new IndexOutOfBoundsException();
 		if (this.root == Node.NULL_NODE)
 			if (pos == 0) this.root = new Node(ch);
 			else throw new IndexOutOfBoundsException();
 		else {
+			// Get result data from Node add()
 			AddResult result = this.root.add(ch, pos);
+			// check if successful and if there needs to be a rotation
 			if (result.success && result.rotation != null) {
 				Node node = Node.NULL_NODE;
 				switch (result.rotation) {
@@ -129,19 +132,18 @@ public class EditTree {
 						node = this.rotationLeftSingle(result.node);
 						break;
 					case LEFT_DOUBLE:
-						System.out.println("DL");
 						node = this.rotationLeftDouble(result.node);
 						break;
 					case RIGHT_SINGLE:
 						node = this.rotationRightSingle(result.node);
 						break;
 					case RIGHT_DOUBLE:
-						System.out.println("DR");
 						node = this.rotationRightDouble(result.node);
 						break;
 				}
 				if (result.parent == Node.NULL_NODE) this.root = node;
 				else {
+					// Perform re-add operation on rebalanced node
 					switch (result.rotation) {
 						case LEFT_SINGLE:
 						case LEFT_DOUBLE: {
@@ -184,14 +186,30 @@ public class EditTree {
 	}
 
 	public Node rotationLeftDouble(Node parent) {
+		Code balance = parent.right.left.balance;
 		parent.right = this.rotationRightSingle(parent.right);
 		Node node = this.rotationLeftSingle(parent);
+		updateDoubleBalances(node, balance);
 		return node;
 	}
 
 	public Node rotationRightDouble(Node parent) {
+		Code balance = parent.left.right.balance;
 		parent.left = this.rotationLeftSingle(parent.left);
-		return this.rotationRightSingle(parent);
+		Node node = this.rotationRightSingle(parent);
+		updateDoubleBalances(node, balance);
+		return node;
+	}
+
+	public void updateDoubleBalances(Node grandChild, Code balance) {
+		switch (balance) {
+			case LEFT:
+				grandChild.right.balance = Code.RIGHT;
+				break;
+			case RIGHT:
+				grandChild.left.balance = Code.LEFT;
+				break;
+		}
 	}
 	
 	
@@ -206,7 +224,7 @@ public class EditTree {
 		if (this.root == Node.NULL_NODE) throw new IndexOutOfBoundsException();
 		Result result = this.root.get(pos);
 		if (result.getSuccess()) return (char) result.getResult();
-		return 0;
+		throw new IndexOutOfBoundsException();
 	}
 
 	/**
@@ -214,7 +232,7 @@ public class EditTree {
 	 * @return the height of this tree
 	 */
 	public int height() {
-		return this.root.height() - 1;
+		return this.root != Node.NULL_NODE ? this.root.height() - 1 : -1;
 	}
 
 	/**
@@ -223,7 +241,7 @@ public class EditTree {
 	 *         not counting the NULL_NODE if you have one.
 	 */
 	public int size() {
-		return (this.root != Node.NULL_NODE) ? this.root.size() : 0; // replace by a real calculation.
+		return (this.root != Node.NULL_NODE) ? this.root.size() : 0;
 	}
 	
 	

@@ -31,9 +31,7 @@ public class Node {
 	char element;            
 	Node left, right; // subtrees
 	int rank;         // inorder position of this node within its own subtree.
-	Code balance; 
-	// Node parent;  // You may want this field.
-	// Feel free to add other fields that you find useful
+	Code balance;     // the direction this tree is leaning
 
 	public Node() {
 		this.left = null;
@@ -49,7 +47,7 @@ public class Node {
 	}
 
 	public int height() {
-		return this == NULL_NODE ? 0 : 1 + Math.max(this.left.height(), this.right.height());
+		return Math.max(this.left != NULL_NODE ? this.left.height() : 0, this.right != NULL_NODE ? this.right.height() : 0) + 1;
 	}
 
 	public int size() {
@@ -58,11 +56,12 @@ public class Node {
 
 	public AddResult add(char ch, int pos) {
 		AddResult result;
+		// Check which subtree to continue down
 		if (pos <= this.rank && pos >= 0) {
-			if (this.left != NULL_NODE) {
-				result = this.left.add(ch, pos);
+			if (this.left != NULL_NODE) { // If we have not yet reached the end of the subtree
+				result = this.left.add(ch, pos); // Recursion
 				if (result.success) this.rank += 1;
-				if (result.success && !result.balanced) {
+				if (result.success && !result.balanced) { // Check if we have not already set up a re-balance
 					switch (this.balance) {
 						case LEFT:
 							if (!result.rotate) result.setValues(this);
@@ -76,23 +75,22 @@ public class Node {
 							break;
 					}
 				}
-			} else {
+			} else { // Add new node to the tree
 				result = new AddResult();
 				Node node = new Node(ch);
 				result.success = true;
 				this.rank += 1;
 				this.left = node;
-				if (this.balance == Code.SAME) {
-					this.balance = Code.LEFT;
-				} else {
+				if (this.balance == Code.SAME) this.balance = Code.LEFT;
+				else {
 					this.balance = Code.SAME;
 					result.balanced = true;
 				}
 			}
-		} else {
-			if (this.right != NULL_NODE) {
-				result = this.right.add(ch, pos - this.rank - 1);
-				if (result.success && !result.balanced) {
+		} else { // Go down right subtree
+			if (this.right != NULL_NODE) { // If we have not yet reached the end of the subtree
+				result = this.right.add(ch, pos - this.rank - 1); // Recursion with new position value
+				if (result.success && !result.balanced) { // Check if we have not already set up a re-balance
 					switch (this.balance) {
 						case LEFT:
 							this.balance = Code.SAME;
@@ -106,38 +104,32 @@ public class Node {
 							break;
 					}
 				}
-			} /*else if (pos > this.rank + 2) {
-				throw new IndexOutOfBoundsException();
-			}*/ else {
+			} else if (pos > this.rank + 1) throw new IndexOutOfBoundsException(); // Check if pos is too high
+			else { // Add new node to the tree
 				result = new AddResult();
 				Node node = new Node(ch);
 				result.success = true;
 				this.right = node;
-				if (this.balance == Code.SAME) {
-					this.balance = Code.RIGHT;
-				} else {
+				if (this.balance == Code.SAME) this.balance = Code.RIGHT;
+				else {
 					this.balance = Code.SAME;
 					result.balanced = true;
 				}
 			}
 		}
-		if (!result.rotate && !result.balanced) {
+		if (!result.rotate && !result.balanced) { // Reassign pointers to previous two Code values
 			result.directions[1] = result.directions[0];
 			result.directions[0] = this.balance;
 		}
-		if (!result.balanced && result.rotate && result.parent == NULL_NODE && result.node != this)
-			result.parent = this;
+		if (result.rotate && result.parent == NULL_NODE && result.node != this) result.parent = this; // Set parent if necessary
 		return result;
 	}
 
 	public Result get(int pos) throws IndexOutOfBoundsException {
-		if (pos == this.rank) return new Result().setSuccess(true).setResult(this.element);
-		else if (pos < this.rank) {
-			if (this.left != NULL_NODE) return this.left.get(pos);
-		} else {
-			if (this.right != NULL_NODE) return this.right.get(pos - this.rank - 1);
-		}
-		throw new IndexOutOfBoundsException();
+		if (pos == this.rank) return new Result().setSuccess(true).setResult(this.element); // Base case
+		else if (pos < this.rank) { if (this.left != NULL_NODE) return this.left.get(pos); } // Recurse down left
+		else { if (this.right != NULL_NODE) return this.right.get(pos - this.rank - 1); } // Recurse down right
+		throw new IndexOutOfBoundsException(); // Throw exception if not found
 	}
 
 	public String toString() {
