@@ -49,7 +49,7 @@ public class Node {
 	}
 
 	public int height() {
-		return this == NULL_NODE ? 0 : 1 + Math.max(this.left.height(), this.right.height());
+		return Math.max(this.left != NULL_NODE ? this.left.height() : 0, this.right != NULL_NODE ? this.right.height() : 0) + 1;
 	}
 
 	public int size() {
@@ -106,9 +106,9 @@ public class Node {
 							break;
 					}
 				}
-			} /*else if (pos > this.rank + 2) {
+			} else if (pos > this.rank + 1) {
 				throw new IndexOutOfBoundsException();
-			}*/ else {
+			} else {
 				result = new AddResult();
 				Node node = new Node(ch);
 				result.success = true;
@@ -125,7 +125,7 @@ public class Node {
 			result.directions[1] = result.directions[0];
 			result.directions[0] = this.balance;
 		}
-		if (!result.balanced && result.rotate && result.parent == NULL_NODE && result.node != this)
+		if (result.rotate && result.parent == NULL_NODE && result.node != this)
 			result.parent = this;
 		return result;
 	}

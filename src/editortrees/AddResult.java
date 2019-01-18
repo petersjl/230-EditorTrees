@@ -24,5 +24,6 @@ public class AddResult {
 		if (this.directions[0] == Node.Code.RIGHT && this.directions[1] == Node.Code.LEFT) this.rotation = Rotation.LEFT_DOUBLE;
 		if (this.directions[0] == Node.Code.RIGHT && this.directions[1] == Node.Code.RIGHT) this.rotation = Rotation.LEFT_SINGLE;
 		this.rotate = true;
+		this.balanced = true;
 	}
 }
