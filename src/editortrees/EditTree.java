@@ -129,14 +129,12 @@ public class EditTree {
 						node = this.rotationLeftSingle(result.node);
 						break;
 					case LEFT_DOUBLE:
-						System.out.println("DL");
 						node = this.rotationLeftDouble(result.node);
 						break;
 					case RIGHT_SINGLE:
 						node = this.rotationRightSingle(result.node);
 						break;
 					case RIGHT_DOUBLE:
-						System.out.println("DR");
 						node = this.rotationRightDouble(result.node);
 						break;
 				}
@@ -185,7 +183,7 @@ public class EditTree {
 
 	public Node rotationLeftDouble(Node parent) {
 		parent.right = this.rotationRightSingle(parent.right);
-		Node node = this.rotationLeftSingle(parent);
+		return this.rotationLeftSingle(parent);
 	}
 
 	public Node rotationRightDouble(Node parent) {

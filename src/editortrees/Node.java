@@ -144,7 +144,6 @@ public class Node {
 		if (this == NULL_NODE) return "";
 		return (this.left != NULL_NODE ? this.left.toString() : "") + this.element + (this.right != NULL_NODE ? this.right.toString() : "");
 	}
-	}
 
 	public void toDebugString(StringBuilder build) {
 		if(this!=NULL_NODE) {
