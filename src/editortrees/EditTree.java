@@ -117,6 +117,7 @@ public class EditTree {
 	 *            if pos is negative or too large for this tree
 	 */
 	public void add(char ch, int pos) throws IndexOutOfBoundsException {
+		if (pos < 0) throw new IndexOutOfBoundsException();
 		if (this.root == Node.NULL_NODE)
 			if (pos == 0) this.root = new Node(ch);
 			else throw new IndexOutOfBoundsException();
