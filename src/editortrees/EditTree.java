@@ -182,13 +182,30 @@ public class EditTree {
 	}
 
 	public Node rotationLeftDouble(Node parent) {
+		Code balance = parent.right.left.balance;
 		parent.right = this.rotationRightSingle(parent.right);
-		return this.rotationLeftSingle(parent);
+		Node node = this.rotationLeftSingle(parent);
+		updateDoubleBalances(node, balance);
+		return node;
 	}
 
 	public Node rotationRightDouble(Node parent) {
+		Code balance = parent.left.right.balance;
 		parent.left = this.rotationLeftSingle(parent.left);
-		return this.rotationRightSingle(parent);
+		Node node = this.rotationRightSingle(parent);
+		updateDoubleBalances(node, balance);
+		return node;
+	}
+
+	public void updateDoubleBalances(Node grandChild, Code balance) {
+		switch (balance) {
+			case LEFT:
+				grandChild.right.balance = Code.RIGHT;
+				break;
+			case RIGHT:
+				grandChild.left.balance = Code.LEFT;
+				break;
+		}
 	}
 	
 	
