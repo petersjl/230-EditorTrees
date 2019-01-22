@@ -144,4 +144,14 @@ public class Node {
 			right.toDebugString(build);
 		}
 	}
+
+	public static Node copy(Node node) {
+		Node me = new Node();
+		me.element = node.element;
+		me.rank = node.rank;
+		me.balance = node.balance;
+		me.left = node.left != NULL_NODE ? Node.copy(node.left) : NULL_NODE;
+		me.right = node.right != NULL_NODE ? Node.copy(node.right) : NULL_NODE;
+		return me;
+	}
 }

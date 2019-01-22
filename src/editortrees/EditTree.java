@@ -35,7 +35,10 @@ public class EditTree {
 	 * @param e
 	 */
 	public EditTree(EditTree e) {
-
+		this.root = Node.NULL_NODE;
+		if (e.root != Node.NULL_NODE) {
+			this.root = Node.copy(e.root);
+		}
 	}
 
 	/**
