@@ -126,7 +126,7 @@ public class EditTree {
 			else throw new IndexOutOfBoundsException();
 		else {
 			// Get result data from Node add()
-			ResultAdd result = this.root.add(ch, pos);
+			Result.ResultAdd result = this.root.add(ch, pos);
 			// check if successful and if there needs to be a rotation
 			if (result.success && result.rotation != null) {
 				Node node = Node.NULL_NODE;

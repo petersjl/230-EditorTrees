@@ -54,8 +54,8 @@ public class Node {
 		return 1 + this.rank + (this.right != NULL_NODE ? this.right.size() : 0);
 	}
 
-	public ResultAdd add(char ch, int pos) {
-		ResultAdd result;
+	public Result.ResultAdd add(char ch, int pos) {
+		Result.ResultAdd result;
 		// Check which subtree to continue down
 		if (pos <= this.rank && pos >= 0) {
 			if (this.left != NULL_NODE) { // If we have not yet reached the end of the subtree
@@ -76,7 +76,7 @@ public class Node {
 					}
 				}
 			} else { // Add new node to the tree
-				result = new ResultAdd();
+				result = new Result.ResultAdd();
 				Node node = new Node(ch);
 				result.success = true;
 				this.rank += 1;
@@ -106,7 +106,7 @@ public class Node {
 				}
 			} else if (pos > this.rank + 1) throw new IndexOutOfBoundsException(); // Check if pos is too high
 			else { // Add new node to the tree
-				result = new ResultAdd();
+				result = new Result.ResultAdd();
 				Node node = new Node(ch);
 				result.success = true;
 				this.right = node;
