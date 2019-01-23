@@ -256,11 +256,14 @@ public class EditTree {
 	 * @throws IndexOutOfBoundsException
 	 */
 	public char delete(int pos) throws IndexOutOfBoundsException {
-		// Implementation requirement:
-		// When deleting a node with two children, you normally replace the
-		// node to be deleted with either its in-order successor or predecessor.
-		// The tests assume assume that you will replace it with the
-		// *successor*.
+		if (pos < 0) throw new IndexOutOfBoundsException();
+		if (this.root == Node.NULL_NODE) throw new IndexOutOfBoundsException();
+		Result.ResultDelete result = this.root.delete(pos, this, null);
+		while (result.nodeStack.size() > 0) {
+			System.out.print(result.nodeStack.pop().element);
+		}
+		System.out.println("");
+		if (!result.deleteSwapped);
 		return '#'; // replace by a real calculation.
 	}
 

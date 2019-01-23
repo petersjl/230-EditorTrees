@@ -1,5 +1,8 @@
 package editortrees;
 
+import java.util.LinkedList;
+import java.util.Stack;
+
 public class Result<T> {
 	public enum Rotation {LEFT_SINGLE, LEFT_DOUBLE, RIGHT_SINGLE, RIGHT_DOUBLE}
 
@@ -24,10 +27,17 @@ public class Result<T> {
 		return this;
 	}
 
+	public static Rotation getRotationType(Node.Code[] directions) {
+		if (directions[0] == Node.Code.LEFT && directions[1] == Node.Code.LEFT) return Rotation.RIGHT_SINGLE;
+		if (directions[0] == Node.Code.LEFT && directions[1] == Node.Code.RIGHT) return Rotation.RIGHT_DOUBLE;
+		if (directions[0] == Node.Code.RIGHT && directions[1] == Node.Code.LEFT) return Rotation.LEFT_DOUBLE;
+		if (directions[0] == Node.Code.RIGHT && directions[1] == Node.Code.RIGHT) return Rotation.LEFT_SINGLE;
+		return null;
+	}
+
 	// This class is used to keep track of the values needed to know how to rotate
 	// It allows us to see what kind of rotation by keeping track of the previous two Code values when going out of the recursion
 	public static class ResultAdd {
-
 		public Node.Code[] directions = new Node.Code[] {null, null};
 		public Rotation rotation;
 		public Node node = Node.NULL_NODE;
@@ -44,17 +54,24 @@ public class Result<T> {
 			this.directions[1] = this.directions[0];
 			this.directions[0] = node.balance;
 			this.node = node;
-			if (this.directions[0] == Node.Code.LEFT && this.directions[1] == Node.Code.LEFT) this.rotation = Rotation.RIGHT_SINGLE;
-			if (this.directions[0] == Node.Code.LEFT && this.directions[1] == Node.Code.RIGHT) this.rotation = Rotation.RIGHT_DOUBLE;
-			if (this.directions[0] == Node.Code.RIGHT && this.directions[1] == Node.Code.LEFT) this.rotation = Rotation.LEFT_DOUBLE;
-			if (this.directions[0] == Node.Code.RIGHT && this.directions[1] == Node.Code.RIGHT) this.rotation = Rotation.LEFT_SINGLE;
+			this.rotation = getRotationType(this.directions);
 			this.rotate = true;
 			this.balanced = true;
 		}
 	}
 
-	//
+	// Similar to the ResultAdd class, but keeps track of what rotations need to be done inline
 	public static class ResultDelete {
+		public Node.Code[] directions = new Node.Code[] {null, null};
+		public Rotation rotation;
+		public Node rotationNode = Node.NULL_NODE;
 
+		public Node deleteNode = Node.NULL_NODE;
+		public Node deleteParent = Node.NULL_NODE;
+		public Node deletePredecessor = Node.NULL_NODE;
+		public boolean deleteSwapped = false;
+
+		public Node lastNode = Node.NULL_NODE;
+		public Stack<Node> nodeStack = new Stack<>();
 	}
 }
