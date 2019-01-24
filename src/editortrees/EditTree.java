@@ -259,12 +259,7 @@ public class EditTree {
 		if (pos < 0) throw new IndexOutOfBoundsException();
 		if (this.root == Node.NULL_NODE) throw new IndexOutOfBoundsException();
 		Result.ResultDelete result = this.root.delete(pos, this, null);
-		while (result.nodeStack.size() > 0) {
-			System.out.print(result.nodeStack.pop().element);
-		}
-		System.out.println("");
-		if (!result.deleteSwapped);
-		return '#'; // replace by a real calculation.
+		return result.deleteNode.element; // replace by a real calculation.
 	}
 
 	/**

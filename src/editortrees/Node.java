@@ -142,7 +142,7 @@ public class Node {
 			}
 			if (!findPredecessor.deleteSwapped) {
 				findPredecessor.lastNode = this;
-				findPredecessor.nodeStack.push(this);
+				findPredecessor.nodeStack.push(new Result.ResultNodeDirection(this, Result.ResultNodeDirection.Direction.LEFT));
 				//System.out.print(result.lastNode.element);
 				return this.right.delete(pos, tree, findPredecessor);
 			}
@@ -233,11 +233,8 @@ public class Node {
 			if (result.rotation == null) result.rotation = Result.getRotationType(result.directions);
 			if (result.rotation != null) result.rotationNode = this;
 		}
-		if (result.lastNode == this.left) System.out.print("LEFT ");
-		if (result.lastNode == this.right) System.out.print("RIGHT ");
 		result.lastNode = this;
-		result.nodeStack.push(this);
-		//System.out.print(result.lastNode.element);
+		result.nodeStack.push(new Result.ResultNodeDirection(this, Result.ResultNodeDirection.Direction.LEFT));
 		return result;
 	}
 

@@ -72,6 +72,18 @@ public class Result<T> {
 		public boolean deleteSwapped = false;
 
 		public Node lastNode = Node.NULL_NODE;
-		public Stack<Node> nodeStack = new Stack<>();
+		public Stack<ResultNodeDirection > nodeStack = new Stack<>();
+	}
+
+	public static class ResultNodeDirection {
+		public enum Direction {LEFT, RIGHT}
+
+		public Node node;
+		public Direction direction;
+
+		public ResultNodeDirection(Node node, Direction direction) {
+			this.node = node;
+			this.direction = direction;
+		}
 	}
 }
