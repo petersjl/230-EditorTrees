@@ -47,7 +47,11 @@ public class Node {
 	}
 
 	public int height() {
-		return Math.max(this.left != NULL_NODE ? this.left.height() : 0, this.right != NULL_NODE ? this.right.height() : 0) + 1;
+		if(this==NULL_NODE) {
+			return -1;
+		}else {
+			return Math.max(this.left.height(), this.right.height())+1;
+		}
 	}
 
 	public int size() {
@@ -125,120 +129,83 @@ public class Node {
 		return result;
 	}
 
-	public Result.ResultDelete delete(int pos, EditTree tree, Result.ResultDelete findPredecessor) throws IndexOutOfBoundsException {
-		Result.ResultDelete result = new Result.ResultDelete();
-		if (findPredecessor != null && findPredecessor.deleteNode != NULL_NODE && !findPredecessor.deleteSwapped) {
-			if (this.right.right == NULL_NODE) {
-				Node leftChildren = this.right.left;
-				this.right.right = findPredecessor.deleteNode.right;
-				this.right.left = findPredecessor.deleteNode.left;
-				this.right.rank = findPredecessor.deleteNode.rank;
-				this.right.balance = findPredecessor.deleteNode.balance;
-				if (findPredecessor.deleteParent.left == findPredecessor.deleteNode) findPredecessor.deleteParent.left = this.right;
-				if (findPredecessor.deleteParent.right == findPredecessor.deleteNode) findPredecessor.deleteParent.right = this.right;
-				this.right = leftChildren;
-				findPredecessor.deleteSwapped = true;
-				result = findPredecessor;
-			}
-			if (!findPredecessor.deleteSwapped) {
-				findPredecessor.lastNode = this;
-				findPredecessor.nodeStack.push(this);
-				//System.out.print(result.lastNode.element);
-				return this.right.delete(pos, tree, findPredecessor);
-			}
-		} else if (findPredecessor == null) {
+	public void delete(int pos, EditTree tree, Result.ResultDelete result) throws IndexOutOfBoundsException {
 			// Check which subtree to continue down
+		    result.nodeStack.push(this);
 			if (pos <= this.rank && pos >= 0) {
 				if (this.left != NULL_NODE) { // If we have not yet reached the end of the subtree
 					if (pos != this.left.rank) {
-						result = this.left.delete(pos, tree, null); // Recursion
+						this.left.delete(pos, tree, result); // Recursion
 					} else { // Remove node from the tree
 						result.deleteNode = this.left;
 						result.deleteParent = this;
+						this.rank--;
 						if (this.left.left == NULL_NODE && this.left.right == NULL_NODE) { // leaf
 							result.deleteParent.left = NULL_NODE;
 							result.deleteSwapped = true;
 						} else if (this.left.left == NULL_NODE && this.left.right != NULL_NODE) { // single R child
-							result.deleteParent.left = this.left.right;
+							this.left = this.left.right;
 							result.deleteSwapped = true;
-						} else if (this.left.right == NULL_NODE) { // single L child
-							result.deleteParent.left = this.left.left;
+						} else if (this.left.right == NULL_NODE && this.left.left!=NULL_NODE) { // single L child
+							this.left = this.left.left;
 							result.deleteSwapped = true;
 						} else if (this.left.left.right == NULL_NODE) { // Double children L leaf
-							this.left.left.right = result.deleteNode.right;
-							this.left.left.right.rank = result.deleteNode.rank;
-							this.left.left.right.balance = result.deleteNode.balance;
-							result.deleteParent.left = this.left.left;
-							this.left.left.right = NULL_NODE;
-							result.deleteSwapped = true;
-						} else if (!result.deleteSwapped) { // double children
-							result = this.left.left.delete(pos, tree, result);
+							this.left.right.left = result.deleteNode.left;
+							this.left.right.left.rank = 0;
+							this.left.right.rank=result.deleteNode.rank;
+							if(result.deleteNode.balance.equals(Code.SAME)) {
+								this.left.right.balance=Code.LEFT;
+							}else if(result.deleteNode.balance.equals(Code.RIGHT)) {
+								this.left.right.balance=Code.SAME;
+							}
+							this.left.right.left.balance = Code.SAME;
+							this.left = this.left.right;
+							//this.left.right.right = NULL_NODE;
 							result.deleteSwapped = true;
 						}
 					}
 				}
+				
 			} else { // Go down right subtree
 				if (this.right != NULL_NODE) { // If we have not yet reached the end of the subtree
-					if (pos - this.rank - 1 != this.left.rank) {
-						result = this.right.delete(pos - this.rank - 1, tree, null); // Recursion with new position value
+					if (pos - this.rank - 1 != this.right.rank) {
+						this.right.delete(pos - this.rank - 1, tree, result); // Recursion with new position value
 					} else { // Remove node from the tree
 						result.deleteNode = this.right;
+						System.out.println(result.deleteNode);
+						System.out.println(this.right);
+						System.out.println(this.right.left.right);
 						result.deleteParent = this;
 						if (this.right.left == NULL_NODE && this.right.right == NULL_NODE) { // leaf
-							result.deleteParent.right = NULL_NODE;
+							this.right = NULL_NODE;
 							result.deleteSwapped = true;
 						} else if (this.right.left == NULL_NODE && this.right.right != NULL_NODE) { // single R child
-							result.deleteParent.right = this.right.right;
+							this.right = this.right.right;
 							result.deleteSwapped = true;
-						} else if (this.right.right == NULL_NODE) { // single L child
-							result.deleteParent.right = this.right.left;
+						} else if (this.right.right == NULL_NODE && this.right.left!=NULL_NODE) { // single L child
+							this.right = this.right.left;
 							result.deleteSwapped = true;
-						} else if (this.right.left.right == NULL_NODE) { // Double children L leaf
-							this.right.left.right = result.deleteNode.right;
-							this.right.left.right.rank = result.deleteNode.rank;
-							this.right.left.right.balance = result.deleteNode.balance;
-							result.deleteParent.right = this.right.left;
-							this.right.left.right = NULL_NODE;
-							result.deleteSwapped = true;
-						} else if (!result.deleteSwapped) { // double children
-							result = this.right.left.delete(pos, tree, result);
+						} else { // Double children L leaf
+							System.out.println(this.right);
+							this.right.right.left = result.deleteNode.left;
+							//this.right.right.left.rank = 0;
+							this.right.right.rank=result.deleteNode.rank;
+							if(result.deleteNode.balance.equals(Code.SAME)) {
+								this.right.right.balance=Code.LEFT;
+							}else if(result.deleteNode.balance.equals(Code.RIGHT)) {
+								this.right.right.balance=Code.SAME;
+							}
+							//this.right.right.left.balance = Code.SAME;
+							System.out.println(this.right.right);
+							this.right = this.right.right;
+							System.out.println(this.right);
+							//this.left.right.right = NULL_NODE;
 							result.deleteSwapped = true;
 						}
 					}
-				} else if (pos > this.rank + 1) throw new IndexOutOfBoundsException(); // Check if pos is too high
+				} else if (pos > this.rank) throw new IndexOutOfBoundsException(); // Check if pos is too high
 			}
-		}
-		if (result != null && result.deleteNode != NULL_NODE) {
-			if (result.rotation != null) {
-				Node node = Node.NULL_NODE;
-				switch (result.rotation) {
-					case LEFT_SINGLE:
-						node = tree.rotationLeftSingle(result.rotationNode);
-						break;
-					case LEFT_DOUBLE:
-						node = tree.rotationLeftDouble(result.rotationNode);
-						break;
-					case RIGHT_SINGLE:
-						node = tree.rotationRightSingle(result.rotationNode);
-						break;
-					case RIGHT_DOUBLE:
-						node = tree.rotationRightDouble(result.rotationNode);
-						break;
-				}
-				if (node != NULL_NODE && result.rotationNode == this.left) this.left = node;
-				if (node != NULL_NODE && result.rotationNode == this.right) this.right = node;
-			}
-			result.directions[1] = result.directions[0]; // Reassign pointers to previous two Code values
-			result.directions[0] = this.balance;
-			if (result.rotation == null) result.rotation = Result.getRotationType(result.directions);
-			if (result.rotation != null) result.rotationNode = this;
-		}
-		if (result.lastNode == this.left) System.out.print("LEFT ");
-		if (result.lastNode == this.right) System.out.print("RIGHT ");
-		result.lastNode = this;
-		result.nodeStack.push(this);
 		//System.out.print(result.lastNode.element);
-		return result;
 	}
 
 	public Result get(int pos) throws IndexOutOfBoundsException {

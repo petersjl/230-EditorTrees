@@ -1,6 +1,9 @@
 package editortrees;
 
+import java.util.Stack;
+
 import editortrees.Node.Code;
+import editortrees.Result.ResultDelete;
 
 // A height-balanced binary tree with rank that could be the basis for a text editor.
 
@@ -235,7 +238,7 @@ public class EditTree {
 	 * @return the height of this tree
 	 */
 	public int height() {
-		return this.root != Node.NULL_NODE ? this.root.height() - 1 : -1;
+		return root.height();
 	}
 
 	/**
@@ -258,10 +261,69 @@ public class EditTree {
 	public char delete(int pos) throws IndexOutOfBoundsException {
 		if (pos < 0) throw new IndexOutOfBoundsException();
 		if (this.root == Node.NULL_NODE) throw new IndexOutOfBoundsException();
-		Result.ResultDelete result = this.root.delete(pos, this, null);
-		while (result.nodeStack.size() > 0) {
-			System.out.print(result.nodeStack.pop().element);
+		if(this.height()==0&&pos==0) {
+			char ele = root.element;
+			root=Node.NULL_NODE;
+			return ele;
 		}
+		ResultDelete result = new ResultDelete();
+		this.root.delete(pos, this, result);
+		Stack<Node> passedNodes = new Stack<Node>();
+		System.out.println(result.nodeStack.toString());
+		Code nextDirection = null;
+		while (result.nodeStack.size() > 0) {
+			Node current = result.nodeStack.pop();
+			if(!passedNodes.isEmpty()) {
+				if(nextDirection.equals(Code.LEFT)) {
+					current.left=passedNodes.pop();
+				}else if(nextDirection.equals(Code.RIGHT)){
+					current.right=passedNodes.pop();
+				}
+			}
+			if(!result.nodeStack.isEmpty()) {
+				Node next = result.nodeStack.peek();
+				if(current.equals(next.left)) {
+					result.nodeStack.peek().rank--;
+					nextDirection=Code.LEFT;
+				}else if(current.equals(next.right)) {
+					nextDirection=Code.RIGHT;
+				}
+				
+			}else {
+				nextDirection=Code.SAME;
+			}
+			//if(!passedNodes.isEmpty()&&passedNodes.peek().equals(current.left)) {
+				//current.rank--;
+			//}
+			if(current.left.height()>current.right.height()) {
+				current.balance=Code.LEFT;
+			}else if(current.left.height()<current.right.height()) {
+				current.balance=Code.RIGHT;
+			}else {
+				current.balance=Code.SAME;
+			}
+			if(Math.abs(current.left.height()-current.right.height())>1) {
+				
+				if(current.left.height()>current.right.height()) {
+					if(current.left.left.height()>=current.left.right.height()) {
+						System.out.println("yeet");
+						current = rotationRightSingle(current);
+						System.out.println(current);
+					}else if(current.left.left.height()<current.left.right.height()) {
+						current = rotationRightDouble(current);
+					}
+				}else if(current.right.height()>current.left.height()) {
+					if(current.right.right.height()>=current.right.left.height()) {
+						current = rotationLeftSingle(current);
+					}else if(current.right.right.height()<current.right.left.height()) {
+						current = rotationLeftDouble(current);
+					}
+				}
+				
+			}
+			passedNodes.push(current);
+		}
+		root=passedNodes.pop();
 		System.out.println("");
 		if (!result.deleteSwapped);
 		return '#'; // replace by a real calculation.
