@@ -257,7 +257,10 @@ public class EditTree {
 	 *            position of character to delete from this tree
 	 * @return the character that is deleted
 	 * @throws IndexOutOfBoundsException
+	 * Milestone 2 Before 11:55 commit
+	 * 
 	 */
+	
 	public char delete(int pos) throws IndexOutOfBoundsException {
 		if (pos < 0) throw new IndexOutOfBoundsException();
 		if (this.root == Node.NULL_NODE) throw new IndexOutOfBoundsException();
