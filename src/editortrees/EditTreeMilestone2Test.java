@@ -2088,7 +2088,6 @@ public class EditTreeMilestone2Test {
 		t1.add('e', 4);
 		t1.add('g');
 		t1.add('f', 5);
-
 		t1.delete(6);
 
 		assertEquals("abcdefg", t1.toString());

@@ -1,6 +1,9 @@
 package editortrees;
 
+import java.util.Stack;
+
 import editortrees.Node.Code;
+import editortrees.Result.ResultDelete;
 
 // A height-balanced binary tree with rank that could be the basis for a text editor.
 
@@ -35,7 +38,10 @@ public class EditTree {
 	 * @param e
 	 */
 	public EditTree(EditTree e) {
-
+		this.root = Node.NULL_NODE;
+		if (e.root != Node.NULL_NODE) {
+			this.root = Node.copy(e.root);
+		}
 	}
 
 	/**
@@ -123,7 +129,7 @@ public class EditTree {
 			else throw new IndexOutOfBoundsException();
 		else {
 			// Get result data from Node add()
-			AddResult result = this.root.add(ch, pos);
+			Result.ResultAdd result = this.root.add(ch, pos);
 			// check if successful and if there needs to be a rotation
 			if (result.success && result.rotation != null) {
 				Node node = Node.NULL_NODE;
@@ -232,7 +238,7 @@ public class EditTree {
 	 * @return the height of this tree
 	 */
 	public int height() {
-		return this.root != Node.NULL_NODE ? this.root.height() - 1 : -1;
+		return root.height();
 	}
 
 	/**
@@ -251,14 +257,74 @@ public class EditTree {
 	 *            position of character to delete from this tree
 	 * @return the character that is deleted
 	 * @throws IndexOutOfBoundsException
+	 * Milestone 2 Before 11:55 commit
+	 * 
 	 */
+	
 	public char delete(int pos) throws IndexOutOfBoundsException {
-		// Implementation requirement:
-		// When deleting a node with two children, you normally replace the
-		// node to be deleted with either its in-order successor or predecessor.
-		// The tests assume assume that you will replace it with the
-		// *successor*.
-		return '#'; // replace by a real calculation.
+		if (pos < 0) throw new IndexOutOfBoundsException();
+		if (this.root == Node.NULL_NODE) throw new IndexOutOfBoundsException();
+		if(this.height()==0&&pos==0) {
+			char ele = root.element;
+			root=Node.NULL_NODE;
+			return ele;
+		}
+		ResultDelete result = new ResultDelete();
+		this.root.delete(pos, this, result);
+		Stack<Node> passedNodes = new Stack<Node>();
+		Code nextDirection = null;
+		while (result.nodeStack.size() > 0) {
+			Node current = result.nodeStack.pop();
+			if(!passedNodes.isEmpty()) {
+				if(nextDirection.equals(Code.LEFT)) {
+					current.left=passedNodes.pop();
+				}else if(nextDirection.equals(Code.RIGHT)){
+					current.right=passedNodes.pop();
+				}
+			}
+			if(!result.nodeStack.isEmpty()) {
+				Node next = result.nodeStack.peek();
+				if(current.equals(next.left)) {
+					result.nodeStack.peek().rank--;
+					nextDirection=Code.LEFT;
+				}else if(current.equals(next.right)) {
+					nextDirection=Code.RIGHT;
+				}
+				
+			}else {
+				nextDirection=Code.SAME;
+			}
+			//if(!passedNodes.isEmpty()&&passedNodes.peek().equals(current.left)) {
+				//current.rank--;
+			//}
+			if(current.left.height()>current.right.height()) {
+				current.balance=Code.LEFT;
+			}else if(current.left.height()<current.right.height()) {
+				current.balance=Code.RIGHT;
+			}else {
+				current.balance=Code.SAME;
+			}
+			if(Math.abs(current.left.height()-current.right.height())>1) {
+				
+				if(current.left.height()>current.right.height()) {
+					if(current.left.left.height()>=current.left.right.height()) {
+						current = rotationRightSingle(current);
+					}else if(current.left.left.height()<current.left.right.height()) {
+						current = rotationRightDouble(current);
+					}
+				}else if(current.right.height()>current.left.height()) {
+					if(current.right.right.height()>=current.right.left.height()) {
+						current = rotationLeftSingle(current);
+					}else if(current.right.right.height()<current.right.left.height()) {
+						current = rotationLeftDouble(current);
+					}
+				}
+				
+			}
+			passedNodes.push(current);
+		}
+		root=passedNodes.pop();
+		return result.deleteNode.element;
 	}
 
 	/**
