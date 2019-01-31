@@ -48,6 +48,35 @@ public class Node {
 		this.balance = Code.SAME;
 	}
 
+	public static Node createTree(String s) {
+		if(s.length() == 1) {
+			return new Node(s.charAt(0));
+		}
+		else if(s.length() == 2){
+			Node node = new Node(s.charAt(1));
+			node.rank = 1;
+			//node.size = 2;
+			node.balance = Code.LEFT;
+			//node.height = 1;
+			node.left = createTree(s.substring(0, 1));
+			return node;
+		}
+		else {
+			int i = s.length()/2;
+			char c = s.charAt(i);
+			String left = s.substring(0, i);
+			String right = s.substring(i + 1);
+			Node node = new Node(c);
+			node.left = createTree(left);
+			node.right = createTree(right);
+			//node.checkBalance();
+			//node.setHeight();
+			//node.setSize();
+			node.rank = left.length();
+			return node;
+		}
+	}
+
 	public int height() {
 		if(this==NULL_NODE) {
 			return -1;
@@ -206,6 +235,13 @@ public class Node {
 		if (pos == this.rank) return new Result().setSuccess(true).setResult(this.element); // Base case
 		else if (pos < this.rank) { if (this.left != NULL_NODE) return this.left.get(pos); } // Recurse down left
 		else { if (this.right != NULL_NODE) return this.right.get(pos - this.rank - 1); } // Recurse down right
+		throw new IndexOutOfBoundsException(); // Throw exception if not found
+	}
+
+	public Result getNode(int pos) throws IndexOutOfBoundsException {
+		if (pos == this.rank) return new Result().setSuccess(true).setResult(this); // Base case
+		else if (pos < this.rank) { if (this.left != NULL_NODE) return this.left.getNode(pos); } // Recurse down left
+		else { if (this.right != NULL_NODE) return this.right.getNode(pos - this.rank - 1); } // Recurse down right
 		throw new IndexOutOfBoundsException(); // Throw exception if not found
 	}
 

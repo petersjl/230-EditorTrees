@@ -234,6 +234,13 @@ public class EditTree {
 		throw new IndexOutOfBoundsException();
 	}
 
+	public Node getNode(int pos) throws IndexOutOfBoundsException {
+		if (this.root == Node.NULL_NODE) throw new IndexOutOfBoundsException();
+		Result r = this.root.getNode(pos);
+		if (r.getSuccess()) return (Node) r.getResult();
+		throw new IndexOutOfBoundsException();
+	}
+
 	/**
 	 * MILESTONE 1
 	 * @return the height of this tree
@@ -291,10 +298,8 @@ public class EditTree {
 			Node newRoot = root.right;
 			//nodeStack.add(newRoot);
 			if(newRoot.left==Node.NULL_NODE) {
-				System.out.println(root);
 				root.element=root.right.element;
 				root.right=root.right.right;
-				System.out.println(root);
 			}else {
 				nodeStack.add(newRoot);
 				while(newRoot.left.left!=Node.NULL_NODE) {
@@ -329,7 +334,6 @@ public class EditTree {
 				}
 				
 			}	
-			System.out.println(nodeStack);
 			rebalanceTreeNodeStack(nodeStack);
 		}
 		
@@ -339,7 +343,6 @@ public class EditTree {
 		Stack<Node> passedNodes = new Stack<Node>();
 		Code nextDirection = null;
 		while (nodeStack.size() > 0) {
-			System.out.println("3");
 			Node current = nodeStack.pop();
 			
 			if(!passedNodes.isEmpty()) {
@@ -422,7 +425,110 @@ public class EditTree {
 	 *             if this == other
 	 */
 	public void concatenate(EditTree other) throws IllegalArgumentException {
+		if(this == other) throw new IllegalArgumentException();
+		if(other.root == Node.NULL_NODE) return;
+		if(this.root == Node.NULL_NODE) {
+			this.root = other.root;
+			other.root = Node.NULL_NODE;
+			return;
+		}
+		if(this.size() == 1) {
+			other.add(this.root.element, 0);
+			this.root = other.root;
+			other.root = Node.NULL_NODE;
+		}
+		else if(other.size() == 1) {
+			this.add(other.root.element, this.size());
+			other.root = Node.NULL_NODE;
+		}
+		else if(this.size() > other.size()) {
+			this.ctRight(other);
+		}
+		else {
+			this.ctLeft(other);
+		}
+	}
 
+	public void ctRight(EditTree other) {
+		EditTree T, V;
+		int hV, hp;
+		Node q, p;
+		Stack<Node> s = new Stack<Node>();
+		T = this;
+		V = other;
+		q = other.getNode(0);
+		V.delete(0);
+		hp = T.height();
+		hV = V.height();
+		p = T.root;
+		while(hp - hV > 1) {
+			s.push(p);
+			if(p.balance == Code.LEFT) hp -= 2;
+			else hp -= 1;
+			p = p.right;
+		}
+		q.left = p;
+		q.right = V.root;
+		if(hp == hV) q.balance = Code.SAME;
+		else q.balance = Code.LEFT;
+		s.push(q);
+		this.root = ctrebalance(s, true);
+		other.root = Node.NULL_NODE;
+	}
+
+	public void ctLeft(EditTree other) {
+		EditTree T, V;
+		int hV, hp;
+		Node q, p;
+		Stack<Node> s = new Stack<Node>();
+		T = other;
+		V = this;
+		q = this.getNode(this.size()-1);
+		V.delete(this.size()-1);
+		hp = T.height();
+		hV = V.height();
+		p = T.root;
+		while(hp - hV > 1) {
+			s.push(p);
+			if(p.balance == Code.RIGHT) hp -= 2;
+			else hp -= 1;
+			p = p.left;
+		}
+		q.right = p;
+		q.left = V.root;
+		if(hp == hV) q.balance = Code.SAME;
+		else q.balance = Code.RIGHT;
+		s.push(q);
+		this.root = ctrebalance(s, false);
+		other.root = Node.NULL_NODE;
+	}
+
+	public Node ctrebalance(Stack<Node> s, boolean right) {
+		Node current = s.pop();
+		/*Node next;
+		while(!s.isEmpty()) {
+			if(Math.abs(current.left.height - current.right.height) > 1) {
+				current = right ? rotationLeftSingle(current) : rotationRightSingle(current);
+				current.left.setHeight();
+				current.right.setHeight();
+				current.left.setSize();
+				current.right.setSize();
+			}
+			next = s.pop();
+			next.right = current;
+			current = next;
+		}
+		if(current == Node.NULL_NODE) return current;
+		current = rotationRightSingle(current);
+		try {
+			current.left.setHeight();
+			current.right.setHeight();
+			current.left.setSize();
+			current.right.setSize();
+		}catch (NullPointerException e){
+//			System.out.println("Got Null Pointer while setting heights/sizes");
+		}*/
+		return current;
 	}
 
 	/**
@@ -486,7 +592,7 @@ public class EditTree {
 	 *         does not occur
 	 */
 	public int find(String s) {
-		return -2;
+		return this.find(s, 0);
 	}
 
 	/**
@@ -499,7 +605,17 @@ public class EditTree {
 	 *         not occur before position pos; -1 if s does not occur
 	 */
 	public int find(String s, int pos) {
-		return -2;
+		if(s.equals("")) return 0;
+		int index = pos;
+		int size = this.size();
+		while(index < size - s.length() + 1) {
+			if(this.get(index) == s.charAt(0)) {
+				String check = this.get(index, s.length());
+				if(this.get(index, s.length()).equals(s)) return index;
+			}
+			index++;
+		}
+		return -1;
 	}
 
 	/**
