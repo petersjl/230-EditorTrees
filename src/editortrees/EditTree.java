@@ -272,7 +272,6 @@ public class EditTree {
 		ResultDelete result = new ResultDelete();
 		this.root.delete(pos, this, result);
 		Stack<Node> passedNodes = new Stack<Node>();
-		System.out.println(result.nodeStack.toString());
 		Code nextDirection = null;
 		while (result.nodeStack.size() > 0) {
 			Node current = result.nodeStack.pop();
@@ -309,9 +308,7 @@ public class EditTree {
 				
 				if(current.left.height()>current.right.height()) {
 					if(current.left.left.height()>=current.left.right.height()) {
-						System.out.println("yeet");
 						current = rotationRightSingle(current);
-						System.out.println(current);
 					}else if(current.left.left.height()<current.left.right.height()) {
 						current = rotationRightDouble(current);
 					}
@@ -327,9 +324,7 @@ public class EditTree {
 			passedNodes.push(current);
 		}
 		root=passedNodes.pop();
-		System.out.println("");
-		if (!result.deleteSwapped);
-		return '#'; // replace by a real calculation.
+		return result.deleteNode.element;
 	}
 
 	/**
