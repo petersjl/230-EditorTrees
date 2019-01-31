@@ -54,7 +54,10 @@ public class EditTree {
 	 * @param s
 	 */
 	public EditTree(String s) {
-		
+		if(s.equals("")) this.root = Node.NULL_NODE;
+		else {
+			this.root = Node.createTree(s);
+		}
 	}
 	
 	/**
@@ -411,7 +414,12 @@ public class EditTree {
 	 *             within this tree.
 	 */
 	public String get(int pos, int length) throws IndexOutOfBoundsException {
-		return "";
+		if(pos + length > this.size()) throw new IndexOutOfBoundsException();
+		String str = "";
+		for(int i = 0; i < length; i++) {
+			 str += this.root.get(pos + i).getResult();
+		}
+		return str;
 	}
 
 	/**
