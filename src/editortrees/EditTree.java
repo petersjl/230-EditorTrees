@@ -1,5 +1,6 @@
 package editortrees;
 
+import java.util.LinkedList;
 import java.util.Stack;
 
 import editortrees.Node.Code;
@@ -269,12 +270,78 @@ public class EditTree {
 			root=Node.NULL_NODE;
 			return ele;
 		}
+		if(pos==root.rank) {
+			char ele = root.element;
+			rootDelete();
+			return ele;
+		}
 		ResultDelete result = new ResultDelete();
 		this.root.delete(pos, this, result);
+		rebalanceTreeNodeStack(result.nodeStack);
+		return result.deleteNode.element;
+	}
+
+	private void rootDelete() {
+		if(root.right==Node.NULL_NODE) {
+			root=root.left;
+			return;
+		}else {
+			Stack<Node> nodeStack = new Stack<Node>();
+			nodeStack.add(root);
+			Node newRoot = root.right;
+			//nodeStack.add(newRoot);
+			if(newRoot.left==Node.NULL_NODE) {
+				System.out.println(root);
+				root.element=root.right.element;
+				root.right=root.right.right;
+				System.out.println(root);
+			}else {
+				nodeStack.add(newRoot);
+				while(newRoot.left.left!=Node.NULL_NODE) {
+					newRoot=newRoot.left;
+					nodeStack.add(newRoot);
+				}
+				Node deleteNode = newRoot.left;
+				Node deleteParent = newRoot;
+				root.element=deleteNode.element;
+				deleteParent.rank--;
+				if (deleteNode.left == Node.NULL_NODE && deleteNode.right == Node.NULL_NODE) { // leaf
+					deleteParent.left = Node.NULL_NODE;
+
+				} else if (deleteNode.left == Node.NULL_NODE && deleteNode.right != Node.NULL_NODE) { // single R child
+					deleteParent.left = deleteNode.right;
+
+				} else if (deleteNode.right == Node.NULL_NODE && deleteNode.left!=Node.NULL_NODE) { // single L child
+					deleteParent.left = deleteNode.left;
+
+				} else if (deleteNode.right.left == Node.NULL_NODE) { // Double children R leaf
+					deleteNode.right.left = deleteNode.left;
+					deleteParent.left = deleteNode.right;
+					deleteParent.left.rank++;
+					if (deleteParent.left.balance == Code.SAME) deleteParent.left.balance = Code.LEFT;
+					else if (deleteParent.left.balance == Code.RIGHT) deleteParent.left.balance = Code.SAME;
+				} else {
+					deleteParent.rank++;
+					LinkedList<Node> nodeList = new LinkedList<>();
+					deleteParent.left = Node.getSuccessor(deleteNode, nodeList);
+					nodeStack.push(deleteParent.left);
+					while (nodeList.size() > 0) nodeStack.push(nodeList.removeFirst());
+				}
+				
+			}	
+			System.out.println(nodeStack);
+			rebalanceTreeNodeStack(nodeStack);
+		}
+		
+	}
+	
+	public void rebalanceTreeNodeStack(Stack<Node> nodeStack){
 		Stack<Node> passedNodes = new Stack<Node>();
 		Code nextDirection = null;
-		while (result.nodeStack.size() > 0) {
-			Node current = result.nodeStack.pop();
+		while (nodeStack.size() > 0) {
+			System.out.println("3");
+			Node current = nodeStack.pop();
+			
 			if(!passedNodes.isEmpty()) {
 				if(nextDirection.equals(Code.LEFT)) {
 					current.left=passedNodes.pop();
@@ -282,10 +349,10 @@ public class EditTree {
 					current.right=passedNodes.pop();
 				}
 			}
-			if(!result.nodeStack.isEmpty()) {
-				Node next = result.nodeStack.peek();
+			if(!nodeStack.isEmpty()) {
+				Node next = nodeStack.peek();
 				if(current.equals(next.left)) {
-					result.nodeStack.peek().rank--;
+					next.rank--;
 					nextDirection=Code.LEFT;
 				}else if(current.equals(next.right)) {
 					nextDirection=Code.RIGHT;
@@ -324,7 +391,6 @@ public class EditTree {
 			passedNodes.push(current);
 		}
 		root=passedNodes.pop();
-		return result.deleteNode.element;
 	}
 
 	/**
