@@ -159,6 +159,7 @@ public class Node {
 							else if (result.deleteParent.left.balance == Code.RIGHT) result.deleteParent.left.balance = Code.SAME;
 							result.deleteSwapped = true;
 						} else {
+							this.rank++;
 							LinkedList<Node> nodeList = new LinkedList<>();
 							result.deleteParent.left = Node.getSuccessor(result.deleteNode, nodeList);
 							result.nodeStack.push(result.deleteParent.left);
